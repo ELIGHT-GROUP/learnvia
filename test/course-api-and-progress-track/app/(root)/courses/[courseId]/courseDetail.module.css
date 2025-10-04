@@ -1,0 +1,107 @@
+.pageWrapper {
+  display: flex;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 250px;
+  background-color: #f8f8f8;
+  padding: 20px;
+  border-right: 1px solid #ddd;
+}
+
+.sidebar h2 {
+  margin-bottom: 15px;
+}
+
+.chapterItem {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.progress {
+  color: #0070f3;
+  font-weight: bold;
+}
+
+/* Main container */
+.container {
+  flex: 1;
+  padding: 20px;
+}
+
+.backLink {
+  display: inline-block;
+  margin-bottom: 15px;
+  text-decoration: none;
+  color: #0070f3;
+}
+
+.courseHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.courseBanner {
+  width: 250px;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-right: 20px;
+}
+
+.courseInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.courseTitle {
+  font-size: 1.8rem;
+  margin-bottom: 5px;
+}
+
+.courseLevel {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.courseDescription {
+  margin-bottom: 30px;
+}
+
+.courseContent {
+  margin-bottom: 20px;
+}
+
+.chapterTitle {
+  font-size: 1.2rem;
+  margin-top: 15px;
+  margin-bottom: 5px;
+}
+
+.lessonsList {
+  list-style: none;
+  padding-left: 15px;
+}
+
+.lessonItem {
+  margin-bottom: 8px;
+}
+
+.totalProgress {
+  font-weight: bold;
+  margin-top: 20px;
+  font-size: 1.1rem;
+}
+
+.loading,
+.error {
+  text-align: center;
+  padding: 50px;
+  font-size: 1.2rem;
+}
