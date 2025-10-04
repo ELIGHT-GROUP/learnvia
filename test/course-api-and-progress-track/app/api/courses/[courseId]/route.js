@@ -1,111 +1,3 @@
-// {
-// 	"success": true,
-// 	"message": "Course retrieved successfully",
-// 	"data": {
-// 		"courseId": "course-1",
-// 		"title": "Course Title course-1",
-// 		"thumbnail": "https://placehold.co/800x450?text=Course&font=roboto",
-// 		"description": "This is a detailed description for Course Title course-1. Learn everything you need about this course.",
-// 		"categories": [
-// 			"Software Engineering",
-// 			"Java",
-// 			"OOP"
-// 		],
-// 		"level": "Beginner",
-// 		"instructors": [
-// 			{
-// 				"id": "inst_955",
-// 				"name": "Dr. Perera",
-// 				"profileImage": "https://placehold.co/100x100?text=Perera"
-// 			},
-// 			{
-// 				"id": "inst_976",
-// 				"name": "Ms. Sanduni",
-// 				"profileImage": "https://placehold.co/100x100?text=Sanduni"
-// 			}
-// 		],
-// 		"chapters": [
-// 			{
-// 				"chapterId": "ch1",
-// 				"title": "Introduction to OOP",
-// 				"type": "chapter",
-// 				"content": [
-// 					{
-// 						"type": "note",
-// 						"data": {
-// 							"html": "<h2>What is OOP?</h2><p>OOP stands for <strong>Object-Oriented Programming</strong>.</p>"
-// 						}
-// 					},
-// 					{
-// 						"type": "video",
-// 						"data": {
-// 							"title": "What is OOP?",
-// 							"url": "https://example.com/videos/intro-oop"
-// 						}
-// 					},
-// 					{
-// 						"type": "quiz",
-// 						"data": {
-// 							"questions": [
-// 								{
-// 									"questionId": "q1",
-// 									"questionText": "What does OOP stand for?",
-// 									"options": [
-// 										"Object-Oriented Programming",
-// 										"Open Output Processing",
-// 										"Ordered Operation Protocol"
-// 									],
-// 									"correctAnswer": "Object-Oriented Programming"
-// 								},
-// 								{
-// 									"questionId": "q2",
-// 									"questionText": "Which of the following is not an OOP concept?",
-// 									"options": [
-// 										"Encapsulation",
-// 										"Polymorphism",
-// 										"Iteration"
-// 									],
-// 									"correctAnswer": "Iteration"
-// 								}
-// 							]
-// 						}
-// 					},
-// 					{
-// 						"type": "flashcards",
-// 						"data": [
-// 							{
-// 								"front": "Encapsulation",
-// 								"back": "Wrapping data and methods into a single unit (class)."
-// 							},
-// 							{
-// 								"front": "Inheritance",
-// 								"back": "Mechanism where one class acquires properties of another."
-// 							}
-// 						]
-// 					}
-// 				],
-// 				"checkInStatus": true,
-// 				"progress": 100
-// 			},
-// 			{
-// 				"chapterId": "ch2",
-// 				"title": "Classes and Objects",
-// 				"type": "chapter",
-// 				"content": [
-// 					{
-// 						"type": "note",
-// 						"data": {
-// 							"html": "<p>A class is a blueprint for creating objects.</p>"
-// 						}
-// 					}
-// 				],
-// 				"checkInStatus": true,
-// 				"progress": 40
-// 			}
-// 		],
-// 		"totalProgress": 70
-// 	}
-// }
 
 // Function to create a course object with user-specific progress
 function createCourseDetail(courseId, title, thumbnail, level, userProgress = {}) {
@@ -113,6 +5,8 @@ function createCourseDetail(courseId, title, thumbnail, level, userProgress = {}
     courseId,
     title,
     thumbnail,
+    banner: `https://placehold.co/800x450?text=${title}&font=roboto`,
+    duration: "4 hours",
     description: `This is a detailed description for ${title}. Learn everything you need about this course.`,
     categories: ["Software Engineering", "Java", "OOP"],
     level,
@@ -232,7 +126,7 @@ function calculateTotalProgress(userProgress) {
 
 // GET handler
 export async function GET(request, { params }) {
-  const { courseId } = params;
+  const { courseId } = await params;
 
   // Mock user progress for demo
   const userProgress = {

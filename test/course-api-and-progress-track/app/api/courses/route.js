@@ -1,12 +1,3 @@
-// app/api/courses/route.js
-
-
-// course object be like this
-//   "courseId": "java-oop-101",
-//   "title": "Java OOP",
-//   "thumbnail": "https://placehold.co/800x450?text=Hello+World&font=roboto",
-//   "level": "Beginner",
-
 
 // Function to create a single course object
 function createCourse(courseId, title, thumbnail, level) {
