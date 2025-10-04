@@ -41,6 +41,8 @@ function createCourseDetail(courseId, title, thumbnail, level, userProgress = {}
             id: "ch1_video1",
             title: "What is OOP? Video",
             type: "video",
+            duration: "10:00",
+            player_type: "youtube",
             checkStatus: userProgress.ch1Video1 || false,
             data: {
               url: "https://example.com/videos/intro-oop"
@@ -56,6 +58,7 @@ function createCourseDetail(courseId, title, thumbnail, level, userProgress = {}
                 {
                   questionId: "q1",
                   questionText: "What does OOP stand for?",
+                  question_image: "https://placehold.co/400x200?text=OOP+Quiz",
                   options: [
                     "Object-Oriented Programming",
                     "Open Output Processing",
@@ -70,6 +73,7 @@ function createCourseDetail(courseId, title, thumbnail, level, userProgress = {}
                 {
                   questionId: "q2",
                   questionText: "Which of the following is not an OOP concept?",
+                  question_image: "",
                   options: ["Encapsulation", "Polymorphism", "Iteration"],
                   correctAnswer: "Iteration",
                   marks: 5,
