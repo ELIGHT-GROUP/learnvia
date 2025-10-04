@@ -1,5 +1,5 @@
 
-### learvia Platform Concept
+### learnvia Platform Concept
 
 * **Type:** Interactive learning platform (like Udemy or IBM SkillBuild), but **not just video-based**. Focuses on **reading, understanding, practicing, and testing**.
 * **Target Audience:** University students (your brothers and sisters) mainly studying **software engineering**.
