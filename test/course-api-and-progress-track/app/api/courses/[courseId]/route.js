@@ -135,39 +135,63 @@ function createCourseDetail(courseId, title, thumbnail, level, userProgress = {}
         type: "chapter",
         content: [
           {
+            id: "ch1_note1",
+            title: "What is OOP?",
             type: "note",
+            checkStatus: userProgress.ch1Note1 || false,
             data: {
               html: "<h2>What is OOP?</h2><p>OOP stands for <strong>Object-Oriented Programming</strong>.</p>"
             }
           },
           {
+            id: "ch1_video1",
+            title: "What is OOP? Video",
             type: "video",
+            checkStatus: userProgress.ch1Video1 || false,
             data: {
-              title: "What is OOP?",
               url: "https://example.com/videos/intro-oop"
             }
           },
           {
+            id: "ch1_quiz1",
+            title: "OOP Basics Quiz",
             type: "quiz",
+            checkStatus: userProgress.ch1Quiz1 || false,
             data: {
               questions: [
                 {
                   questionId: "q1",
                   questionText: "What does OOP stand for?",
-                  options: ["Object-Oriented Programming", "Open Output Processing", "Ordered Operation Protocol"],
-                  correctAnswer: "Object-Oriented Programming"
+                  options: [
+                    "Object-Oriented Programming",
+                    "Open Output Processing",
+                    "Ordered Operation Protocol"
+                  ],
+                  correctAnswer: "Object-Oriented Programming",
+                  marks: 5,             // points for this question
+                  answered: null,       // what user answered
+                  isCorrect: null,      // true/false after submission
+                  explanation: "OOP stands for Object-Oriented Programming, which uses classes and objects."
                 },
                 {
                   questionId: "q2",
                   questionText: "Which of the following is not an OOP concept?",
                   options: ["Encapsulation", "Polymorphism", "Iteration"],
-                  correctAnswer: "Iteration"
+                  correctAnswer: "Iteration",
+                  marks: 5,
+                  answered: null,
+                  isCorrect: null,
+                  explanation: "Iteration is a general programming concept, not specific to OOP."
                 }
-              ]
+              ],
+              totalMarks: 10  // sum of all question marks
             }
           },
           {
+            id: "ch1_flash1",
+            title: "OOP Flashcards",
             type: "flashcards",
+            checkStatus: userProgress.ch1Flash1 || false,
             data: [
               { front: "Encapsulation", back: "Wrapping data and methods into a single unit (class)." },
               { front: "Inheritance", back: "Mechanism where one class acquires properties of another." }
@@ -182,13 +206,18 @@ function createCourseDetail(courseId, title, thumbnail, level, userProgress = {}
         title: "Classes and Objects",
         type: "chapter",
         content: [
-          { type: "note", data: { html: "<p>A class is a blueprint for creating objects.</p>" } }
+          {
+            id: "ch2_note1",
+            title: "Classes and Objects Note",
+            type: "note",
+            checkStatus: userProgress.ch2Note1 || false,
+            data: { html: "<p>A class is a blueprint for creating objects.</p>" }
+          }
         ],
         checkInStatus: userProgress.ch2 ? true : false,
         progress: userProgress.ch2 || 0
       }
     ],
-    // Optional: total course progress for this user
     totalProgress: calculateTotalProgress(userProgress)
   };
 }
@@ -208,7 +237,12 @@ export async function GET(request, { params }) {
   // Mock user progress for demo
   const userProgress = {
     ch1: 100,
-    ch2: 40
+    ch1Note1: true,
+    ch1Video1: true,
+    ch1Quiz1: true,
+    ch1Flash1: true,
+    ch2: 40,
+    ch2Note1: true
   };
 
   const course = createCourseDetail(
