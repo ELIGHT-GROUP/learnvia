@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function CoursesPage() {
   return (
     <div>
-      <div className="flex items-center justify-between p-5">
+      <div className="flex items-center justify-between p-5 gap-5">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">
             Course Management
@@ -21,7 +21,7 @@ export default function CoursesPage() {
             Create, edit, and manage all available courses.
           </p>
         </div>
-        <Button asChild>
+        <Button className="text-white" asChild>
           <Link href="/dashboard/courses/add">
             <PlusCircle />
             Add Course

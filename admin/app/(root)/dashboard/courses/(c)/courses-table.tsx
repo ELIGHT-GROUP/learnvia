@@ -34,7 +34,7 @@ export function CoursesTable() {
   const currentCourses = courses.slice(startIndex, endIndex);
 
   return (
-    <Card className="border-none">
+    <Card className="border-none bg-background">
       <CardContent>
         <Table>
           <TableHeader>

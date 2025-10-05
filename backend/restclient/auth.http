@@ -1,15 +1,5 @@
 # Auth REST Client
 ###
-GET http://localhost:8080/api/auth/google?redirect_uri=http://localhost:3000/oauth/callback
-
-HTTP/1.1 400  - Bad Request
-x-powered-by: Express
-vary: Origin
-access-control-allow-credentials: true
-content-type: application/json; charset=utf-8
-content-length: 60
-etag: W/"3c-4xyqfqpOc+bEKbiz1XAQQ5ODDpE"
-date: Sun, 05 Oct 2025 05:14:36 GMT
-connection: close
+GET http://localhost:8080/api/auth/google?redirect_uri=http://localhost:3000/dashboard
 ###
 GET http://localhost:8080/api/auth/google/callback?code=TEST_CODE&state=TEST_STATE
