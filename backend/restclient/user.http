@@ -1,0 +1,51 @@
+# User REST Client
+
+### Get user by id (protected)
+### Requires Authorization: Bearer <token>
+GET http://localhost:8080/api/users/{userId}
+Authorization: Bearer {accesstoken}
+
+
+### Example environment variables for REST client (use in your REST client extension)
+### {{access_token}} - set to the JWT returned in the fragment after OAuth flow
+### {{userId}} - the id of the user to fetch (e.g. from the JWT payload `userId`)
+
+### How to extract the access_token in the browser after redirect
+### The client receives the redirect to: http://localhost:3000/oauth/callback#access_token=<JWT>&...
+### Use JS to read window.location.hash and extract access_token, then pass it in Authorization header for API calls.
+
+
+### Successful response (200 OK)
+### HTTP/1.1 200 OK
+### {
+###   "_id": "64f8b3a7e4a9c2b0f1d2e3c4",
+###   "email": "user@example.com",
+###   "role": "STUDENT",
+###   "googleId": "10782345xxxxxx",
+###   "createdAt": "2025-10-05T12:34:56.789Z",
+###   "updatedAt": "2025-10-05T12:34:56.789Z"
+### }
+
+
+### Unauthorized (missing/invalid token)
+### HTTP/1.1 401 Unauthorized
+### {
+###   "statusCode": 401,
+###   "message": "Unauthorized"
+### }
+
+
+### Forbidden (role mismatch / ownDataMiddleware rejected)
+### HTTP/1.1 403 Forbidden
+### {
+###   "statusCode": 403,
+###   "message": "Forbidden"
+### }
+
+
+### Not Found
+### HTTP/1.1 404 Not Found
+### {
+###   "statusCode": 404,
+###   "message": "User not found"
+### }
