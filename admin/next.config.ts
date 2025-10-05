@@ -3,7 +3,14 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   images: {
-    domains: ["shorturl.at"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "shorturl.at",
+        port: "",
+        pathname: "/**",
+      },
+    ],
   },
 };
 
