@@ -3,14 +3,7 @@
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,6 +21,7 @@ import {
 } from "@/components/ui/table";
 import { MoreHorizontal } from "lucide-react";
 import { courses } from "./data";
+import { Separator } from "@/components/ui/separator";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -40,13 +34,7 @@ export function CoursesTable() {
   const currentCourses = courses.slice(startIndex, endIndex);
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Courses</CardTitle>
-        <CardDescription>
-          A list of all courses on the platform.
-        </CardDescription>
-      </CardHeader>
+    <Card className="border-none">
       <CardContent>
         <Table>
           <TableHeader>
@@ -96,6 +84,7 @@ export function CoursesTable() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                      <Separator />
                       <DropdownMenuItem>Edit</DropdownMenuItem>
                       <DropdownMenuItem>View Analytics</DropdownMenuItem>
                       <DropdownMenuItem className="text-destructive">

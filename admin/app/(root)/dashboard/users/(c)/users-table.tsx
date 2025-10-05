@@ -8,10 +8,7 @@ import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
-  CardHeader,
-  CardTitle,
 } from '@/components/ui/card';
 import {
   DropdownMenu,
@@ -29,6 +26,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { MoreHorizontal } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
 
 const ITEMS_PER_PAGE = 5;
 
@@ -41,11 +39,7 @@ export function UsersTable() {
   const currentUsers = users.slice(startIndex, endIndex);
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Users</CardTitle>
-        <CardDescription>A list of all users on the platform.</CardDescription>
-      </CardHeader>
+    <Card className="border-none">
       <CardContent>
         <Table>
           <TableHeader>
@@ -106,6 +100,7 @@ export function UsersTable() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                      <Separator />
                       <DropdownMenuItem>Edit Role</DropdownMenuItem>
                       <DropdownMenuItem>Reset Progress</DropdownMenuItem>
                       <DropdownMenuItem className="text-destructive">
