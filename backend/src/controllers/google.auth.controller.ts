@@ -10,7 +10,7 @@ export class GoogleAuthController {
   private googleAuthService = new GoogleAuthService();
   private logger = createServiceLogger("GoogleAuthController");
 
-  // GET /api/auth/google
+  // GET /api/v1/auth/google
   initiateGoogleAuth(req: Request, res: Response) {
     // clientRedirect is where we should send the user after successful auth (frontend or mobile deep link)
     const clientRedirect =
@@ -49,7 +49,7 @@ export class GoogleAuthController {
     res.redirect(authUrl);
   }
 
-  // GET /api/auth/google/callback
+  // GET /api/v1/auth/google/callback
   async googleCallback(req: Request, res: Response): Promise<void> {
     const { code, state } = req.query as any;
     this.logger.debug(`Callback received state present: ${Boolean(state)}`);

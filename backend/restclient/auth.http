@@ -1,5 +1,61 @@
 # Auth REST Client
-###
-GET http://localhost:8080/api/auth/google?redirect_uri=http://localhost:3000/dashboard
-###
-GET http://localhost:8080/api/auth/google/callback?code=TEST_CODE&state=TEST_STATE
+
+### Initiate Google OAuth (opens redirect to Google)
+### GET /api/auth/google?redirect_uri=<clientRedirect>
+GET http://localhost:8080/api/v1/auth/google?redirect_uri=http://localhost:3000/oauth/callback
+
+
+### Note: Google will redirect to the server callback at /api/v1/auth/google/callback
+### The server exchanges the code and then redirects the browser to the client redirect URI with the app JWT in the fragment:
+### e.g. http://localhost:3000/oauth/callback#access_token=<JWT>&token_type=Bearer&expires_in=3600&state=<state>
+
+### To simulate the callback exchange you can (only for testing) call the callback endpoint directly with code and state
+### WARNING: calling the callback directly without a real Google code will fail; this is only illustrative
+GET http://localhost:8080/api/v1/auth/google/callback?code=TEST_CODE&state=TEST_STATE
+
+
+### Sample successful browser redirect (what the client will receive)
+### This is not an API JSON response; after successful server-side exchange the browser will be redirected to the client redirect URI with a fragment:
+### HTTP 302 Location: http://localhost:3000/oauth/callback#access_token=eyJ...&token_type=Bearer&expires_in=3600&state=<state>
+
+
+### Example JSON-like success payload (for documentation only)
+### The server does not respond with this JSON — it redirects the browser — but this shows the token shape if you decode the JWT payload.
+### {
+###   "access_token": "eyJ...",
+###   "token_type": "Bearer",
+###   "expires_in": 3600,
+###   "state": "<signed_state_token>",
+### }
+
+
+### Sample error responses
+
+### 400 Bad Request — missing or invalid redirect
+### HTTP/1.1 400 Bad Request
+### {
+###   "statusCode": 400,
+###   "message": "Invalid redirect_uri"
+### }
+
+### 400 Bad Request — invalid or expired state on callback
+### HTTP/1.1 400 Bad Request
+### {
+###   "statusCode": 400,
+###   "message": "Invalid or expired state"
+### }
+
+### 400 Bad Request — missing code
+### HTTP/1.1 400 Bad Request
+### {
+###   "statusCode": 400,
+###   "message": "Missing authorization code"
+### }
+
+### 502 Bad Gateway — token exchange failed (Google returned an error)
+### HTTP/1.1 502 Bad Gateway
+### {
+###   "statusCode": 502,
+###   "message": "Failed to exchange code with Google",
+###   "details": {"error": "invalid_grant", "error_description": "Bad request"}
+### }

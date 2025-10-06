@@ -101,7 +101,7 @@ export class GoogleAuthService {
       const e: any = error;
       const details = e?.response?.data || e?.message || e;
       this.logger.error("Failed to exchange code for tokens:", details);
-    
+
       const msg =
         typeof details === "string" ? details : JSON.stringify(details);
       throw new BadRequestError(
@@ -110,9 +110,14 @@ export class GoogleAuthService {
     }
   }
 
-
   async createOrUpdateUserFromGoogle(googleUser: GoogleUserInfo): Promise<{
-    user: { id: string; email: string; role: string };
+    user: {
+      id: string;
+      email: string;
+      role: string;
+      name?: string;
+      picture?: string;
+    };
   }> {
     if (!googleUser.email_verified) {
       throw new BadRequestError("Google email not verified");
@@ -127,6 +132,8 @@ export class GoogleAuthService {
 
       user = new UserModel({
         email: googleUser.email,
+        name: googleUser.name,
+        picture: googleUser.picture,
         role,
         googleId: googleUser.sub,
       });
@@ -135,6 +142,11 @@ export class GoogleAuthService {
       this.logger.info(`Created new user via Google: ${user.email}`);
     } else if (!user.googleId) {
       user.googleId = googleUser.sub;
+      // update name/picture if missing or changed
+      if (googleUser.name && user.name !== googleUser.name)
+        user.name = googleUser.name;
+      if (googleUser.picture && user.picture !== googleUser.picture)
+        user.picture = googleUser.picture;
       await user.save();
     }
 
@@ -143,6 +155,8 @@ export class GoogleAuthService {
         id: user._id.toString(),
         email: user.email,
         role: user.role,
+        name: user.name,
+        picture: user.picture,
       },
     };
   }

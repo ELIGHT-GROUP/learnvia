@@ -9,11 +9,26 @@ import { UserRole } from "../enums/user.roles";
 const router = Router();
 const usersController = new UsersController();
 
+router.get("/me", authMiddleware, usersController.getMe.bind(usersController));
+
+router.get(
+  "/",
+  authMiddleware([UserRole.OWNER, UserRole.ADMIN]),
+  usersController.getAllUsers.bind(usersController)
+);
+
 router.get(
   "/:id",
-  authMiddleware, 
+  authMiddleware,
   ownDataMiddleware,
   usersController.getUser.bind(usersController)
+);
+
+router.put(
+  "/:id",
+  authMiddleware,
+  ownDataMiddleware,
+  usersController.updateUser.bind(usersController)
 );
 
 export default router;

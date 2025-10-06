@@ -1,25 +1,42 @@
 # User REST Client
 
+### Get current user profile
+GET http://localhost:8080/api/v1/users/me
+Authorization: Bearer {{access_token}}
+
+
 ### Get user by id (protected)
-### Requires Authorization: Bearer <token>
-GET http://localhost:8080/api/users/{userId}
-Authorization: Bearer {accesstoken}
+GET http://localhost:8080/api/v1/users/{{userId}}
+Authorization: Bearer {{access_token}}
+
+
+### List all users (admin/owner)
+GET http://localhost:8080/api/v1/users
+Authorization: Bearer {{access_token}}
+
+
+### Update user (only the owner of the resource)
+PUT http://localhost:8080/api/v1/users/{{userId}}
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+	"name": "New Name",
+	"picture": "https://lh3.googleusercontent.com/a-/AOh14Gh..."
+}
 
 
 ### Example environment variables for REST client (use in your REST client extension)
-### {{access_token}} - set to the JWT returned in the fragment after OAuth flow
-### {{userId}} - the id of the user to fetch (e.g. from the JWT payload `userId`)
+### ACCESS_TOKEN - set to the JWT returned in the fragment after OAuth flow
+### USER_ID - the id of the user to fetch (e.g. from the JWT payload `userId`)
 
-### How to extract the access_token in the browser after redirect
-### The client receives the redirect to: http://localhost:3000/oauth/callback#access_token=<JWT>&...
-### Use JS to read window.location.hash and extract access_token, then pass it in Authorization header for API calls.
-
-
-### Successful response (200 OK)
+### Successful response (200 OK example for GET /me)
 ### HTTP/1.1 200 OK
 ### {
 ###   "_id": "64f8b3a7e4a9c2b0f1d2e3c4",
 ###   "email": "user@example.com",
+###   "name": "Jane Doe",
+###   "picture": "https://lh3.googleusercontent.com/a-/AOh14Gh...",
 ###   "role": "STUDENT",
 ###   "googleId": "10782345xxxxxx",
 ###   "createdAt": "2025-10-05T12:34:56.789Z",

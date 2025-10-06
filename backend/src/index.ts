@@ -25,8 +25,10 @@ app.use(
 );
 app.use(express.json());
 
-app.use("/api/auth", authRoutes);
-app.use("/api/users", usersRoutes);
+import { API_BASE } from "./config/api.config";
+
+app.use(`${API_BASE}/auth`, authRoutes);
+app.use(`${API_BASE}/users`, usersRoutes);
 
 // Centralized error handler (should be last middleware)
 app.use(errorHandler);
