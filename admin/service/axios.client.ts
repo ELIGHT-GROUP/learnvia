@@ -1,16 +1,16 @@
 import axios from "axios";
-import Cookies from "js-cookie";
 
 const axiosClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACKEND_URL || "",
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true,
 });
 
 axiosClient.interceptors.request.use(
   (config) => {
-    const token = Cookies.get("authToken");
+    const token = localStorage.getItem("authtoken");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -25,7 +25,7 @@ axiosClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      Cookies.remove("authToken");
+      localStorage.removeItem("authtoken");
       //window.location.href = "/auth/login";
     }
     return Promise.reject(error);

@@ -20,6 +20,8 @@ export const metadata: Metadata = {
   description: systemData.system.description,
 };
 
+import { AuthProvider } from "@/providers/AuthProvider";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -37,7 +39,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <ReactQueryProvider>
-            {children}
+            <AuthProvider>{children}</AuthProvider>
           </ReactQueryProvider>
         </ThemeProvider>
       </body>

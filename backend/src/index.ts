@@ -15,10 +15,12 @@ const app: Express = express();
 
 app.use(morganMiddleware);
 
+const origins = process.env.FRONTEND_ORIGIN?.split(",") || [];
+
 app.use(
   cors({
-    origin: ["http://localhost:8080", "http://localhost:3000"],
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    origin: origins,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })

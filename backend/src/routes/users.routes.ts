@@ -13,7 +13,7 @@ router.get("/me", authMiddleware, usersController.getMe.bind(usersController));
 
 router.get(
   "/",
-  authMiddleware([UserRole.OWNER, UserRole.ADMIN]),
+  authMiddleware(UserRole.OWNER, UserRole.ADMIN),
   usersController.getAllUsers.bind(usersController)
 );
 

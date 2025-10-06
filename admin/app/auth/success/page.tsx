@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import Cookies from "js-cookie";
 import Lottie from "lottie-react";
 import { useRouter } from "next/navigation";
 import SuccessAnimation from "@/public/lotties/Success.json";
@@ -17,7 +16,7 @@ const SuccessPage = () => {
       const accessToken = params.get("access_token");
 
       if (accessToken) {
-        Cookies.set("authToken", accessToken); 
+        localStorage.setItem("authtoken", accessToken);
         setTimeout(() => {
           router.push("/dashboard");
         }, 2000);
@@ -32,9 +31,9 @@ const SuccessPage = () => {
   return (
     <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
       {error ? (
-        <Lottie animationData={ErrorAnimation} loop={false} style={{ width: 150, height: 150 }} />
+        <Lottie animationData={ErrorAnimation} loop={false} style={{ width: 200, height: 200 }} />
       ) : (
-        <Lottie animationData={SuccessAnimation} loop={false} style={{ width: 150, height: 150 }} />
+        <Lottie animationData={SuccessAnimation} loop={false} style={{ width: 200, height: 200 }} />
       )}
     </div>
   );

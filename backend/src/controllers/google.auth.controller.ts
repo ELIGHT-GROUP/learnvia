@@ -33,10 +33,7 @@ export class GoogleAuthController {
 
     // Sign a state token containing nonce and the client redirectUri (short lived)
     const nonce = crypto.randomBytes(16).toString("hex");
-    const stateToken = jwtUtil.sign(
-      { nonce, redirectUri: clientRedirect },
-      { expiresIn: "10m" }
-    );
+    const stateToken = jwtUtil.sign({ nonce, redirectUri: clientRedirect });
 
     // Use the backend callback (GOOGLE_REDIRECT_URI) as the redirect_uri parameter sent to Google
     const googleRedirect = process.env.GOOGLE_REDIRECT_URI!;
@@ -86,19 +83,16 @@ export class GoogleAuthController {
     );
 
     // Issue application JWT (short lived)
-    const appToken = jwtUtil.sign(
-      { userId: result.user.id, role: result.user.role },
-      { expiresIn: "1h" }
-    );
+    const appToken = jwtUtil.sign({
+      userId: result.user.id,
+      role: result.user.role,
+    });
 
     // Redirect back to client with token in fragment (so it's not sent to server)
     // Use the redirectUri provided in the signed state
-    const expiresIn = 60 * 60; // seconds
     const target = `${redirectUri}#access_token=${encodeURIComponent(
       appToken
-    )}&token_type=Bearer&expires_in=${expiresIn}&state=${encodeURIComponent(
-      state as string
-    )}`;
+    )}&token_type=Bearer&state=${encodeURIComponent(state as string)}`;
     res.redirect(target);
   }
 }
