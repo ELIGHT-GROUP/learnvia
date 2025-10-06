@@ -9,7 +9,7 @@ if (!JWT_SECRET) {
 
 export const sign = (payload: object, options?: jwt.SignOptions): string => {
   if (!JWT_SECRET) throw new Error("JWT_SECRET not configured");
-  return jwt.sign(payload, JWT_SECRET, options || { expiresIn: "1h" });
+  return jwt.sign(payload, JWT_SECRET, options || {});
 };
 
 export const verify = (token: string): any => {

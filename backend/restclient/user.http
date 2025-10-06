@@ -1,51 +1,52 @@
 # User REST Client
 
-### Get user by id (protected)
-### Requires Authorization: Bearer <token>
-GET http://localhost:8080/api/users/{userId}
-Authorization: Bearer {accesstoken}
+@user_id = 68e352c9b644d3721a4dbbd9
+@access_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGUzNTJjOWI2NDRkMzcyMWE0ZGJiZDkiLCJyb2xlIjoib3duZXIiLCJpYXQiOjE3NTk3NDQ3MTh9.XHa7qxNbIlXh_K2Qx-BjfutK6Aw20-J7RdYk96uMEfE
+###
+GET http://localhost:8080/api/v1/users/me
+Authorization: Bearer {{access_token}}
 
+HTTP/1.1 200  - OK
+x-powered-by: Express
+vary: Origin
+access-control-allow-credentials: true
+content-type: application/json; charset=utf-8
+content-length: 354
+etag: W/"162-CyLJIKpB0/Fg42u394ogMbwLw/A"
+date: Mon, 06 Oct 2025 06:52:18 GMT
+connection: close
+###
+GET http://localhost:8080/api/v1/users/{{user_id}}
+Authorization: Bearer {{access_token}}
 
-### Example environment variables for REST client (use in your REST client extension)
-### {{access_token}} - set to the JWT returned in the fragment after OAuth flow
-### {{userId}} - the id of the user to fetch (e.g. from the JWT payload `userId`)
+HTTP/1.1 200  - OK
+x-powered-by: Express
+vary: Origin
+access-control-allow-credentials: true
+content-type: application/json; charset=utf-8
+content-length: 354
+etag: W/"162-CyLJIKpB0/Fg42u394ogMbwLw/A"
+date: Mon, 06 Oct 2025 05:31:52 GMT
+connection: close
+###
+GET http://localhost:8080/api/v1/users
+Authorization: Bearer {{access_token}}
 
-### How to extract the access_token in the browser after redirect
-### The client receives the redirect to: http://localhost:3000/oauth/callback#access_token=<JWT>&...
-### Use JS to read window.location.hash and extract access_token, then pass it in Authorization header for API calls.
+HTTP/1.1 200  - OK
+x-powered-by: Express
+vary: Origin
+access-control-allow-credentials: true
+content-type: application/json; charset=utf-8
+content-length: 699
+etag: W/"2bb-e8bNG1+eE6CIIAeg7cpGhJMxHtM"
+date: Mon, 06 Oct 2025 10:01:25 GMT
+connection: close
+###
+PUT http://localhost:8080/api/v1/users/{{userId}}
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
 
-
-### Successful response (200 OK)
-### HTTP/1.1 200 OK
-### {
-###   "_id": "64f8b3a7e4a9c2b0f1d2e3c4",
-###   "email": "user@example.com",
-###   "role": "STUDENT",
-###   "googleId": "10782345xxxxxx",
-###   "createdAt": "2025-10-05T12:34:56.789Z",
-###   "updatedAt": "2025-10-05T12:34:56.789Z"
-### }
-
-
-### Unauthorized (missing/invalid token)
-### HTTP/1.1 401 Unauthorized
-### {
-###   "statusCode": 401,
-###   "message": "Unauthorized"
-### }
-
-
-### Forbidden (role mismatch / ownDataMiddleware rejected)
-### HTTP/1.1 403 Forbidden
-### {
-###   "statusCode": 403,
-###   "message": "Forbidden"
-### }
-
-
-### Not Found
-### HTTP/1.1 404 Not Found
-### {
-###   "statusCode": 404,
-###   "message": "User not found"
-### }
+{
+	"name": "New Name",
+	"picture": "https://lh3.googleusercontent.com/a-/AOh14Gh..."
+}

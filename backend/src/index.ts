@@ -15,18 +15,22 @@ const app: Express = express();
 
 app.use(morganMiddleware);
 
+const origins = process.env.FRONTEND_ORIGIN?.split(",") || [];
+
 app.use(
   cors({
-    origin: ["http://localhost:8080", "http://localhost:3000"],
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    origin: origins,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
 app.use(express.json());
 
-app.use("/api/auth", authRoutes);
-app.use("/api/users", usersRoutes);
+import { API_BASE } from "./config/api.config";
+
+app.use(`${API_BASE}/auth`, authRoutes);
+app.use(`${API_BASE}/users`, usersRoutes);
 
 // Centralized error handler (should be last middleware)
 app.use(errorHandler);

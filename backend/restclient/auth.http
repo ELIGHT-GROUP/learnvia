@@ -2,16 +2,16 @@
 
 ### Initiate Google OAuth (opens redirect to Google)
 ### GET /api/auth/google?redirect_uri=<clientRedirect>
-GET http://localhost:8080/api/auth/google?redirect_uri=http://localhost:3000/oauth/callback
+GET http://localhost:8080/api/v1/auth/google?redirect_uri=http://localhost:3000/oauth/callback
 
 
-### Note: Google will redirect to the server callback at /api/auth/google/callback
+### Note: Google will redirect to the server callback at /api/v1/auth/google/callback
 ### The server exchanges the code and then redirects the browser to the client redirect URI with the app JWT in the fragment:
 ### e.g. http://localhost:3000/oauth/callback#access_token=<JWT>&token_type=Bearer&expires_in=3600&state=<state>
 
 ### To simulate the callback exchange you can (only for testing) call the callback endpoint directly with code and state
 ### WARNING: calling the callback directly without a real Google code will fail; this is only illustrative
-GET http://localhost:8080/api/auth/google/callback?code=TEST_CODE&state=TEST_STATE
+GET http://localhost:8080/api/v1/auth/google/callback?code=TEST_CODE&state=TEST_STATE
 
 
 ### Sample successful browser redirect (what the client will receive)

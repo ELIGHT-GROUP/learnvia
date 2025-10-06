@@ -1,25 +1,18 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { users } from './data';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { useState } from "react";
+import { users } from "./data";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from "@/components/ui/dropdown-menu";
 import {
   Table,
   TableBody,
@@ -27,8 +20,13 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { MoreHorizontal } from 'lucide-react';
+} from "@/components/ui/table";
+import { MoreHorizontal } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { useGetUsers } from "@/service/query/useUsers";
+import { User } from "@/types/api-user-type";
+import { Spinner } from "@/components/ui/spinner";
+import { convertDate } from "@/utils/dateConvert";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -40,12 +38,25 @@ export function UsersTable() {
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const currentUsers = users.slice(startIndex, endIndex);
 
+  const {
+    data: usersData,
+    isLoading,
+    isError,
+  } = useGetUsers({
+    page: currentPage,
+    limit: ITEMS_PER_PAGE,
+  });
+
+  if (isLoading) {
+    return <Spinner />;
+  }
+
+  if (isError) {
+    return <div>Error loading users</div>;
+  }
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Users</CardTitle>
-        <CardDescription>A list of all users on the platform.</CardDescription>
-      </CardHeader>
+    <Card className="border-none bg-background">
       <CardContent>
         <Table>
           <TableHeader>
@@ -60,13 +71,13 @@ export function UsersTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {currentUsers.map(user => (
-              <TableRow key={user.id}>
+            {usersData?.map((user: User) => (
+              <TableRow key={user._id}>
                 <TableCell>
                   <div className="flex items-center gap-3">
                     <Avatar className="h-9 w-9">
                       <AvatarImage
-                        src={user.avatarUrl}
+                        src={user.picture}
                         alt="Avatar"
                         data-ai-hint="person avatar"
                       />
@@ -83,18 +94,18 @@ export function UsersTable() {
                 <TableCell>{user.role}</TableCell>
                 <TableCell>
                   <Badge
-                    variant={user.status === 'Active' ? 'outline' : 'secondary'}
+                    variant={"Active" === "Active" ? "outline" : "secondary"}
                     className={
-                      user.status === 'Active'
-                        ? 'text-green-700 border-green-400'
-                        : ''
+                      "Active" === "Active"
+                        ? "text-green-700 border-green-400"
+                        : ""
                     }
                   >
-                    {user.status}
+                    {"Active"}
                   </Badge>
                 </TableCell>
                 <TableCell className="hidden md:table-cell">
-                  {user.lastLogin}
+                  {convertDate(user.updatedAt)}
                 </TableCell>
                 <TableCell>
                   <DropdownMenu>
@@ -106,6 +117,7 @@ export function UsersTable() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                      <Separator />
                       <DropdownMenuItem>Edit Role</DropdownMenuItem>
                       <DropdownMenuItem>Reset Progress</DropdownMenuItem>
                       <DropdownMenuItem className="text-destructive">
@@ -122,18 +134,18 @@ export function UsersTable() {
       <CardFooter>
         <div className="flex w-full items-center justify-between text-xs text-muted-foreground">
           <div>
-            Showing{' '}
+            Showing{" "}
             <strong>
-              {Math.min(startIndex + 1, users.length)} -{' '}
+              {Math.min(startIndex + 1, users.length)} -{" "}
               {Math.min(endIndex, users.length)}
-            </strong>{' '}
+            </strong>{" "}
             of <strong>{users.length}</strong> users
           </div>
           <div className="flex items-center gap-2">
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage === 1}
             >
               Previous
@@ -141,7 +153,7 @@ export function UsersTable() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
             >
               Next

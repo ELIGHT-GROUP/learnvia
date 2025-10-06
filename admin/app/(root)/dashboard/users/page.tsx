@@ -10,17 +10,17 @@ export const metadata: Metadata = {
 
 export default function UsersPage() {
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
+    <div>
+      <div className="flex items-center justify-between p-5 gap-5">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">User Management</h1>
           <p className="mt-1 text-muted-foreground">
             View, create, and manage user accounts and roles.
           </p>
         </div>
-        <Button variant="default">
+        <Button className='text-white'>
           <PlusCircle />
-          Add User
+          Invite User
         </Button>
       </div>
       <UsersTable />

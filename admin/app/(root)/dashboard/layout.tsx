@@ -22,14 +22,14 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
 
 const DashboardContent = ({ children }: { children: React.ReactNode }) => {
   const { state } = useSidebar();
-  const withText = state === "expanded";
+  const isExpanded = state === "expanded";
 
   return (
     <>
       <Toaster />
       <Sidebar side="left" collapsible="icon">
-        <SidebarHeader className="border-b h-16 flex justify-center mx-2">
-          <Logo size="sm" withText={withText} />
+        <SidebarHeader className="border-b h-16 flex justify-center">
+          <Logo size="sm" mode={isExpanded ? "full" : "icon-only"} />
         </SidebarHeader>
         <SidebarContent className="flex-1 m-2">
           <SidebarNav />
