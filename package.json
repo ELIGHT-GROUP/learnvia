@@ -1,0 +1,10 @@
+{
+  "name": "learnvia",
+  "version": "1.0.0",
+  "description": "learnvia platform",
+  "scripts": {
+    "dev": "node ./script/start-dev.js"
+  },
+  "author": "Elight-Group",
+  "license": "ISC"
+}
