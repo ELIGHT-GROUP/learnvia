@@ -1,0 +1,9 @@
+{
+    "system": {
+        "name": "Learnvia",
+        "version": "1.0.0",
+        "description": "Admin panel for Learnvia",
+        "logo": "/logo.svg",
+        "favicon": "/favicon.ico"
+    }
+}
