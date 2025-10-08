@@ -84,7 +84,7 @@ export function UsersTable() {
 
   const isActive = (user: User) => {
     const THREE_DAYS = 3 * 24 * 60 * 60 * 1000; // 3 days in ms
-    return Date.now() - new Date(user.updatedAt).getTime() < THREE_DAYS;
+    return Date.now() - new Date(user.lastLoggedIn).getTime() < THREE_DAYS;
   };
 
   return (
@@ -103,7 +103,7 @@ export function UsersTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {usersData?.map((user: User) => (
+            {usersData?.items?.map((user: User) => (
               <TableRow key={user._id}>
                 <TableCell>
                   <div className="flex items-center gap-3">
@@ -137,7 +137,7 @@ export function UsersTable() {
                   </Badge>
                 </TableCell>
                 <TableCell className="hidden md:table-cell">
-                  {convertDate(user.updatedAt)}
+                  {convertDate(user.lastLoggedIn)}
                 </TableCell>
 
                 {user.role !== "owner" ? (

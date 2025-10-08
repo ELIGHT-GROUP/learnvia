@@ -9,6 +9,7 @@ export interface User {
   googleId: string;
   createdAt: string;
   updatedAt: string;
+  lastLoggedIn: string;
 }
 
 export interface GetUsersParams {
