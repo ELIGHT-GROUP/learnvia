@@ -50,3 +50,20 @@ Content-Type: application/json
 	"name": "New Name",
 	"picture": "https://lh3.googleusercontent.com/a-/AOh14Gh..."
 }
+
+###
+PUT http://localhost:8080/api/v1/users/{{user_id}}/role
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+  "role": "admin"
+}
+
+HTTP/1.1 200  - OK
+
+###
+DELETE http://localhost:8080/api/v1/users/{{user_id}}
+Authorization: Bearer {{access_token}}
+
+HTTP/1.1 200  - OK

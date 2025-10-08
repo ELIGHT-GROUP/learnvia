@@ -93,8 +93,12 @@ export class UsersController {
     try {
       const userId = req.params.id;
       const { role } = req.body;
-      const updated = await this.usersService.changeUserRole(userId, role);
-      res.json(apiResponse.success(updated));
+      await this.usersService.changeUserRole(userId, role);
+      res.json(
+        apiResponse.success({
+          message: `The user role changed successfully to ${role}.`,
+        })
+      );
     } catch (error: any) {
       res.status(400).json(apiResponse.fail(error.message));
     }
