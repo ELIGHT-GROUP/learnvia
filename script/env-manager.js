@@ -7,11 +7,12 @@ const axios = require('axios'); // npm install axios
 const API_URL = "https://script.google.com/macros/s/AKfycbyRjbI2zo_HfRhSAnXcUGah7nYTmflfn1plkDB9RMzC8MfkLpsJGvlRpv40zR1KlVTJ/exec"; 
 // 👆 Use your Web App deployment URL (ending in /exec)
 
+const ABSOLUTE_PATH = path.resolve(__dirname, '../');
 // List of env files to manage
 const ENV_FILES_CONFIG = [
-    { name: 'learnvia-admin-env', path: 'D:\\learnvia\\admin\\.env' },
-    { name: 'learnvia-backend-env', path: 'D:\\learnvia\\backend\\.env' },
-    { name: 'learnvia-web-env', path: 'D:\\learnvia\\web\\.env' }
+    { name: 'learnvia-admin-env', path: path.join(ABSOLUTE_PATH, 'admin', '.env') },
+    { name: 'learnvia-backend-env', path: path.join(ABSOLUTE_PATH, 'backend', '.env') },
+    { name: 'learnvia-web-env', path: path.join(ABSOLUTE_PATH, 'web', '.env') }
 ];
 // -----------------------------------------------------
 
