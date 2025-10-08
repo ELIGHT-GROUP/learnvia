@@ -1,7 +1,7 @@
 # User REST Client
 
 @user_id = 68e352c9b644d3721a4dbbd9
-@access_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGUzNTJjOWI2NDRkMzcyMWE0ZGJiZDkiLCJyb2xlIjoib3duZXIiLCJpYXQiOjE3NTk3NDQ3MTh9.XHa7qxNbIlXh_K2Qx-BjfutK6Aw20-J7RdYk96uMEfE
+@access_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGU2NjZhMTY3YTc1ZDdlYTc5MDM3N2MiLCJyb2xlIjoib3duZXIiLCJpYXQiOjE3NTk5MzAzNTN9.dbj5_3AHe9hFfo0yNlvoPFA0e4FIUxnEImsEruVXLvQ
 ###
 GET http://localhost:8080/api/v1/users/me
 Authorization: Bearer {{access_token}}
@@ -28,8 +28,8 @@ content-length: 354
 etag: W/"162-CyLJIKpB0/Fg42u394ogMbwLw/A"
 date: Mon, 06 Oct 2025 05:31:52 GMT
 connection: close
-###
-GET http://localhost:8080/api/v1/users
+###	
+GET http://localhost:8080/api/v1/users?page=1&limit=10
 Authorization: Bearer {{access_token}}
 
 HTTP/1.1 200  - OK
@@ -42,7 +42,7 @@ etag: W/"2bb-e8bNG1+eE6CIIAeg7cpGhJMxHtM"
 date: Mon, 06 Oct 2025 10:01:25 GMT
 connection: close
 ###
-PUT http://localhost:8080/api/v1/users/{{userId}}
+PUT http://localhost:8080/api/v1/users/{{{{user_id}}}}
 Authorization: Bearer {{access_token}}
 Content-Type: application/json
 
