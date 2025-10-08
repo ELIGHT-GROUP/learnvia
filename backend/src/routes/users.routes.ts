@@ -31,4 +31,16 @@ router.put(
   usersController.updateUser.bind(usersController)
 );
 
+router.delete(
+  "/:id",
+  authMiddleware(UserRole.OWNER, UserRole.ADMIN),
+  usersController.deleteUser.bind(usersController)
+);
+
+router.put(
+  "/:id/role",
+  authMiddleware(UserRole.OWNER, UserRole.ADMIN),
+  usersController.changeUserRole.bind(usersController)
+);
+
 export default router;

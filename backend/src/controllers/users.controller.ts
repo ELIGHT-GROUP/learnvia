@@ -37,6 +37,8 @@ export class UsersController {
   async getMe(req: Request, res: Response): Promise<void> {
     try {
       const requestingUserId = (req as any).user.userId;
+      // Update lastLoggedIn timestamp since this endpoint indicates user activity
+      await this.usersService.updateLastLoggedIn(requestingUserId);
       const user = await this.usersService.getById(requestingUserId);
       res.json(apiResponse.success(user));
     } catch (error: any) {
@@ -47,8 +49,10 @@ export class UsersController {
   // GET /users (admin can list all users)
   async getAllUsers(req: Request, res: Response): Promise<void> {
     try {
-      const users = await this.usersService.getAll();
-      res.json(apiResponse.success(users));
+      const page = parseInt((req.query.page as string) || "1", 10);
+      const limit = parseInt((req.query.limit as string) || "25", 10);
+      const result = await this.usersService.getAll(page, limit);
+      res.json(apiResponse.success(result));
     } catch (error: any) {
       res.status(500).json(apiResponse.fail(error.message));
     }
@@ -66,6 +70,30 @@ export class UsersController {
         updates,
         requestingUserId
       );
+      res.json(apiResponse.success(updated));
+    } catch (error: any) {
+      res.status(400).json(apiResponse.fail(error.message));
+    }
+  }
+
+  // DELETE /users/:id
+  async deleteUser(req: Request, res: Response): Promise<void> {
+    try {
+      const userId = req.params.id;
+      const requestingUserId = (req as any).user.userId;
+      await this.usersService.deleteUser(userId, requestingUserId);
+      res.json(apiResponse.success({ message: "User deleted" }));
+    } catch (error: any) {
+      res.status(400).json(apiResponse.fail(error.message));
+    }
+  }
+
+  // PUT /users/:id/role
+  async changeUserRole(req: Request, res: Response): Promise<void> {
+    try {
+      const userId = req.params.id;
+      const { role } = req.body;
+      const updated = await this.usersService.changeUserRole(userId, role);
       res.json(apiResponse.success(updated));
     } catch (error: any) {
       res.status(400).json(apiResponse.fail(error.message));

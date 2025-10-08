@@ -6,6 +6,7 @@ export interface IUser extends Document {
   picture?: string;
   role: string;
   googleId?: string;
+  lastLoggedIn?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -17,6 +18,7 @@ const UserSchema: Schema = new Schema(
     picture: { type: String },
     role: { type: String, default: "user" },
     googleId: { type: String, unique: true, sparse: true },
+    lastLoggedIn: { type: Date },
   },
   { timestamps: true }
 );

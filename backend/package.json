@@ -6,6 +6,8 @@
   "scripts": {
     "start": "node dist/index.js",
     "dev": "ts-node-dev --respawn src/index.ts",
+    "seed-users": "ts-node src/seeds/seedUsers.ts",
+    "clear-users": "ts-node src/seeds/clearUsers.ts",
     "dev:prod": "NODE_ENV=production ts-node src/index.ts",
     "build": "tsc",
     "watch": "tsc -w",
