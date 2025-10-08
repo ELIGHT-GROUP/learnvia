@@ -25,7 +25,7 @@ export function Logo({
   };
 
   const LogoContent = () => (
-    <div className={cn("flex items-center gap-2", className)}>
+    <div className={cn("flex items-center", className)}>
       {/* Logo Icon */}
       {(mode === "full" || mode === "icon-only") && (
         <div className={cn("relative", sizeClasses[size])}>
@@ -34,7 +34,7 @@ export function Logo({
             height={32}
             src={systemData.system.logo}
             alt={systemData.system.name}
-            className={cn(sizeClasses[size], "dark:invert")}
+            className={cn(sizeClasses[size], "p-[2px]")}
           />
         </div>
       )}
