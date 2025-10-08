@@ -52,7 +52,7 @@ export class UsersController {
       const page = parseInt((req.query.page as string) || "1", 10);
       const limit = parseInt((req.query.limit as string) || "25", 10);
       const result = await this.usersService.getAll(page, limit);
-      res.json(apiResponse.success(result));
+      res.json(apiResponse.successPaginated(result.items, result.meta));
     } catch (error: any) {
       res.status(500).json(apiResponse.fail(error.message));
     }
