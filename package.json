@@ -3,8 +3,12 @@
   "version": "1.0.0",
   "description": "learnvia platform",
   "scripts": {
-    "dev": "node ./script/start-dev.js"
+    "dev": "node ./script/start-dev.js",
+    "env": "node ./script/env-manager.js"
   },
   "author": "Elight-Group",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.12.2"
+  }
 }
