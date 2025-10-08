@@ -1,11 +1,9 @@
-import { UsersTable } from './(c)/users-table';
-import type { Metadata } from 'next';
-import { Button } from '@/components/ui/button';
-import { PlusCircle } from 'lucide-react';
+import { UsersTable } from "./(c)/users-table";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'Learvia Admin - Users',
-  description: 'Manage users on the Learvia platform.',
+  title: "Learvia Admin - Users",
+  description: "Manage users on the Learvia platform.",
 };
 
 export default function UsersPage() {
@@ -18,10 +16,6 @@ export default function UsersPage() {
             View, create, and manage user accounts and roles.
           </p>
         </div>
-        <Button className='text-white'>
-          <PlusCircle />
-          Invite User
-        </Button>
       </div>
       <UsersTable />
     </div>

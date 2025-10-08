@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import { users } from "./data";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -21,12 +21,39 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { MoreHorizontal } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  CircleAlertIcon,
+  MoreHorizontal,
+  ShieldUser,
+  StoreIcon,
+} from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useGetUsers } from "@/service/query/useUsers";
 import { User } from "@/types/api-user-type";
 import { Spinner } from "@/components/ui/spinner";
 import { convertDate } from "@/utils/dateConvert";
+import { RadioGroup } from "@/components/ui/radio-group";
+import { RadioGroupItem } from "@/components/ui/radio-group";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -54,6 +81,11 @@ export function UsersTable() {
   if (isError) {
     return <div>Error loading users</div>;
   }
+
+  const isActive = (user: User) => {
+    const THREE_DAYS = 3 * 24 * 60 * 60 * 1000; // 3 days in ms
+    return Date.now() - new Date(user.updatedAt).getTime() < THREE_DAYS;
+  };
 
   return (
     <Card className="border-none bg-background">
@@ -94,38 +126,86 @@ export function UsersTable() {
                 <TableCell>{user.role}</TableCell>
                 <TableCell>
                   <Badge
-                    variant={"Active" === "Active" ? "outline" : "secondary"}
+                    variant={isActive(user) ? "outline" : "secondary"}
                     className={
-                      "Active" === "Active"
+                      isActive(user)
                         ? "text-green-700 border-green-400"
-                        : ""
+                        : "text-gray-600 border-gray-400"
                     }
                   >
-                    {"Active"}
+                    {isActive(user) ? "Active" : "Inactive"}
                   </Badge>
                 </TableCell>
                 <TableCell className="hidden md:table-cell">
                   {convertDate(user.updatedAt)}
                 </TableCell>
-                <TableCell>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button aria-haspopup="true" size="icon" variant="ghost">
-                        <MoreHorizontal className="h-4 w-4" />
-                        <span className="sr-only">Toggle menu</span>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <Separator />
-                      <DropdownMenuItem>Edit Role</DropdownMenuItem>
-                      <DropdownMenuItem>Reset Progress</DropdownMenuItem>
-                      <DropdownMenuItem className="text-destructive">
-                        Deactivate
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
+
+                {user.role !== "owner" ? (
+                  <>
+                    <TableCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            aria-haspopup="true"
+                            size="icon"
+                            variant="ghost"
+                          >
+                            <MoreHorizontal className="h-4 w-4" />
+                            <span className="sr-only">Toggle menu</span>
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                          <Separator />
+                          <UserRolesChangeDialog defaultValue={user.role}>
+                            <DropdownMenuItem
+                              defaultValue={user.role}
+                              onSelect={(e) => e.preventDefault()}
+                            >
+                              Edit Role
+                            </DropdownMenuItem>
+                          </UserRolesChangeDialog>
+
+                          <UserDeactivateDialog>
+                            <DropdownMenuItem
+                              className="text-destructive"
+                              onSelect={(e) => e.preventDefault()}
+                            >
+                              Delete
+                            </DropdownMenuItem>
+                          </UserDeactivateDialog>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </>
+                ) : (
+                  <>
+                    <TableCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            aria-haspopup="true"
+                            size="icon"
+                            variant="ghost"
+                          >
+                            <MoreHorizontal className="h-4 w-4" />
+                            <span className="sr-only">Toggle menu</span>
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                          <Separator />
+                          <DropdownMenuItem
+                            defaultValue={user.role}
+                            onSelect={(e) => e.preventDefault()}
+                          >
+                            Edit Profile
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </>
+                )}
               </TableRow>
             ))}
           </TableBody>
@@ -164,3 +244,130 @@ export function UsersTable() {
     </Card>
   );
 }
+
+const UserDeactivateDialog = ({ children }: { children: ReactNode }) => {
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
+      <AlertDialogContent>
+        <div className="flex flex-col gap-2 max-sm:items-center sm:flex-row sm:gap-4">
+          <div
+            className="flex size-9 shrink-0 items-center justify-center rounded-full border"
+            aria-hidden="true"
+          >
+            <CircleAlertIcon className="opacity-80" size={16} />
+          </div>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to Delete this user? All their data will be
+              removed.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+        </div>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction className="bg-destructive hover:bg-destructive/90">Confirm</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+};
+
+const UserRolesChangeDialog = ({
+  children,
+  defaultValue,
+}: {
+  children: ReactNode;
+  defaultValue?: string;
+}) => {
+  const [role, setRole] = useState(defaultValue || "student");
+  console.log("role", role);
+
+  const clickCss =
+    "border-primary/50 has-focus-visible:border-ring has-focus-visible:ring-ring/50";
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogContent>
+        <div className="mb-2 flex flex-col gap-2">
+          <div
+            className="flex size-11 shrink-0 items-center justify-center rounded-full border"
+            aria-hidden="true"
+          >
+            <ShieldUser className="opacity-80" size={16} />
+          </div>
+          <DialogHeader>
+            <DialogTitle className="text-left">Role Change</DialogTitle>
+            <DialogDescription className="text-left">
+              Select the new role for the user.
+            </DialogDescription>
+          </DialogHeader>
+        </div>
+
+        <form className="space-y-5">
+          <div className="space-y-4">
+            <RadioGroup
+              className="grid-cols-1"
+              defaultValue={role}
+              value={role}
+              onValueChange={setRole}
+            >
+              {/* admin */}
+              <label
+                className={`border-input ${
+                  role === "admin" ? clickCss : ""
+                } relative flex cursor-pointer flex-col gap-1 rounded-md border px-4 py-3 shadow-xs transition-[color,box-shadow] outline-none has-focus-visible:ring-[3px]`}
+              >
+                <RadioGroupItem
+                  id="radio-admin"
+                  value="admin"
+                  className="sr-only after:absolute after:inset-0"
+                />
+                <p className="text-foreground text-sm font-medium">Admin</p>
+                <p className="text-muted-foreground text-sm">
+                  Manage all users and courses
+                </p>
+              </label>
+              {/* instructor */}
+              <label
+                className={`border-input ${
+                  role === "instructor" ? clickCss : ""
+                } relative flex cursor-pointer flex-col gap-1 rounded-md border px-4 py-3 shadow-xs transition-[color,box-shadow] outline-none has-focus-visible:ring-[3px]`}
+              >
+                <RadioGroupItem
+                  id="radio-instructor"
+                  value="instructor"
+                  className="sr-only after:absolute after:inset-0"
+                />
+                <p className="text-foreground text-sm font-medium">
+                  Instructor
+                </p>
+                <p className="text-muted-foreground text-sm">
+                  Create and manage courses
+                </p>
+              </label>
+              {/* student */}
+              <label
+                className={`border-input ${
+                  role === "student" ? clickCss : ""
+                } relative flex cursor-pointer flex-col gap-1 rounded-md border px-4 py-3 shadow-xs transition-[color,box-shadow] outline-none has-focus-visible:ring-[3px]`}
+              >
+                <RadioGroupItem
+                  id="radio-student"
+                  value="student"
+                  className="sr-only after:absolute after:inset-0"
+                />
+                <p className="text-foreground text-sm font-medium">Student</p>
+                <p className="text-muted-foreground text-sm">
+                  Enroll in courses and track progress
+                </p>
+              </label>
+            </RadioGroup>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+};

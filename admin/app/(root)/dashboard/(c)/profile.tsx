@@ -15,10 +15,6 @@ import { useAuth } from "@/providers/AuthProvider";
 const Profile = () => {
   const { user, logout } = useAuth();
 
-  //todo
-  console.log("Profile", user);
-
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
