@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import jwtUtil from "../utils/jwt.util";
 import apiResponse from "../utils/apiResponse.util";
-import { UserRole } from "../enums/user.roles";
+import { UserRole } from "../constants/user.roles";
 import { createServiceLogger } from "../utils/logger.util";
 
 const logger = createServiceLogger("AuthMiddleware");

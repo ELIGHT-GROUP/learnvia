@@ -72,9 +72,10 @@ export async function bumpVersion(name: string): Promise<number | null> {
 export async function getVersion(name: string): Promise<number> {
   const key = getPrefixedKey(versionKey(name));
   try {
-    const v = await adapter.incr(key); // incr returns number; but if not set, this will set to 1
-    if (v === null) return 0;
-    return v;
+    const raw = await adapter.getRaw(key);
+    if (!raw) return 0;
+    const n = Number(raw);
+    return Number.isFinite(n) ? Math.floor(n) : 0;
   } catch (err) {
     logger.error("getVersion failed", { name, err });
     return 0;
