@@ -60,10 +60,18 @@ export const useUpdateUser = (id: string) => {
   });
 };
 
-export const useDeleteUser = (id: string) => {
+export const useDeleteUser = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: () => deleteUser(id),
+    mutationFn: (id: string) => {
+      const promise = deleteUser(id);
+      toast.promise(promise, {
+        loading: "Deleting user...",
+        success: "User deleted successfully!",
+        error: "Failed to delete user.",
+      });
+      return promise;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
     },

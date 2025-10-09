@@ -45,7 +45,7 @@ import {
   ShieldUser,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import { useGetUsers, useUpdateUserRole } from "@/service/query/useUsers";
+import { useDeleteUser, useGetUsers, useUpdateUserRole } from "@/service/query/useUsers";
 import { User } from "@/types/api-user-type";
 import { Spinner } from "@/components/ui/spinner";
 import { convertDate } from "@/utils/dateConvert";
@@ -164,7 +164,7 @@ export function UsersTable() {
                             </DropdownMenuItem>
                           </UserRolesChangeDialog>
 
-                          <UserDeactivateDialog>
+                          <UserDeactivateDialog id={user._id}>
                             <DropdownMenuItem
                               className="text-destructive"
                               onSelect={(e) => e.preventDefault()}
@@ -243,9 +243,21 @@ export function UsersTable() {
   );
 }
 
-const UserDeactivateDialog = ({ children }: { children: ReactNode }) => {
+const UserDeactivateDialog = ({ children, id }: { children: ReactNode; id: string }) => {
+  const { mutateAsync: deleteUser } = useDeleteUser();
+  const [isOpen, setIsOpen] = useState(false);
+  
+  const handleDelete = async () => {
+    try {
+      await deleteUser(id);
+      setIsOpen(false);
+    } catch (error) {
+      console.error("❌ Failed to delete user:", error);
+    }
+  };
+  
   return (
-    <AlertDialog>
+    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
       <AlertDialogContent>
         <div className="flex flex-col gap-2 max-sm:items-center sm:flex-row sm:gap-4">
@@ -265,7 +277,7 @@ const UserDeactivateDialog = ({ children }: { children: ReactNode }) => {
         </div>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction className="bg-destructive hover:bg-destructive/90">
+          <AlertDialogAction onClick={handleDelete} className="bg-destructive hover:bg-destructive/90">
             Confirm
           </AlertDialogAction>
         </AlertDialogFooter>
