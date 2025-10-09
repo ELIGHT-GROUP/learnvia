@@ -12,6 +12,10 @@ export class GoogleAuthController {
 
   // GET /api/v1/auth/google
   initiateGoogleAuth(req: Request, res: Response) {
+    this.logger.info("Initiating Google OAuth flow", {
+      ip: req.ip,
+      path: req.path,
+    });
     // clientRedirect is where we should send the user after successful auth (frontend or mobile deep link)
     const clientRedirect =
       (req.query.redirect_uri as string) || process.env.FRONTEND_ORIGIN;
@@ -34,6 +38,7 @@ export class GoogleAuthController {
     // Sign a state token containing nonce and the client redirectUri (short lived)
     const nonce = crypto.randomBytes(16).toString("hex");
     const stateToken = jwtUtil.sign({ nonce, redirectUri: clientRedirect });
+    this.logger.debug("Signed state token for OAuth flow", { nonce });
 
     // Use the backend callback (GOOGLE_REDIRECT_URI) as the redirect_uri parameter sent to Google
     const googleRedirect = process.env.GOOGLE_REDIRECT_URI!;
@@ -84,6 +89,11 @@ export class GoogleAuthController {
 
     // Issue application JWT (short lived)
     const appToken = jwtUtil.sign({
+      userId: result.user.id,
+      role: result.user.role,
+    });
+
+    this.logger.info("Google OAuth completed, issuing app token", {
       userId: result.user.id,
       role: result.user.role,
     });
