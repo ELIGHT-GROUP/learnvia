@@ -142,12 +142,7 @@ export class GoogleAuthService {
 
       await user.save();
       this.logger.info(`Created new user via Google: ${user.email}`);
-      // invalidate users list cache
-      try {
-        await bumpVersion(USER_CACHE.USERS_LIST);
-      } catch (err) {
-        this.logger.warn("Failed to bump users:list version", err);
-      }
+      // cache invalidation removed for testing — bumpVersion available for future use
     } else if (!user.googleId) {
       user.googleId = googleUser.sub;
       // update name/picture if missing or changed
@@ -156,12 +151,7 @@ export class GoogleAuthService {
       if (googleUser.picture && user.picture !== googleUser.picture)
         user.picture = googleUser.picture;
       await user.save();
-      // bump version when updating user record
-      try {
-        await bumpVersion(USER_CACHE.USERS_LIST);
-      } catch (err) {
-        this.logger.warn("Failed to bump users:list version", err);
-      }
+      // cache invalidation removed for testing — bumpVersion available for future use
     }
 
     return {

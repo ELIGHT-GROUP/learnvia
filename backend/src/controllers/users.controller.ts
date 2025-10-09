@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { UsersService } from "../services/users.service";
 import { createServiceLogger } from "../utils/logger.util";
-import apiResponse from "../utils/api_response.util";
+import apiResponse from "../utils/apiResponse.util";
 
 export class UsersController {
   private usersService = new UsersService();
@@ -40,13 +40,28 @@ export class UsersController {
       // Update lastLoggedIn timestamp since this endpoint indicates user activity
       await this.usersService.updateLastLoggedIn(requestingUserId);
       const user = await this.usersService.getById(requestingUserId);
+      // Cache minimal /me profile for fast role checks
+      try {
+        // keep cached minimal profile short-lived (60s)
+        const cacheSvc = await import("../services/cache/cache.service");
+        const { makeUserProfileKey } = await import("../utils/cache.util");
+        await cacheSvc.default.set(
+          makeUserProfileKey(requestingUserId),
+          { id: requestingUserId, role: (user as any).role },
+          60
+        );
+      } catch (err) {
+        this.logger.warn("Failed to cache /me profile", {
+          err: (err as any).message,
+        });
+      }
       res.json(apiResponse.success(user));
     } catch (error: any) {
       res.status(500).json(apiResponse.fail(error.message));
     }
   }
 
-  // GET /users (admin can list all users)
+  // GET /users
   async getAllUsers(req: Request, res: Response): Promise<void> {
     try {
       const page = parseInt((req.query.page as string) || "1", 10);

@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { GoogleAuthService } from "../services/google.auth.service";
 import { createServiceLogger } from "../utils/logger.util";
-import apiResponse from "../utils/api_response.util";
 import crypto from "crypto";
 import jwtUtil from "../utils/jwt.util";
 import { BadRequestError } from "../errors/HttpError";
@@ -87,15 +86,11 @@ export class GoogleAuthController {
       googleUser
     );
 
-    // Issue application JWT (short lived)
-    const appToken = jwtUtil.sign({
-      userId: result.user.id,
-      role: result.user.role,
-    });
+    // Issue application JWT (short lived) - do NOT include role in token
+    const appToken = jwtUtil.sign({ userId: result.user.id });
 
     this.logger.info("Google OAuth completed, issuing app token", {
       userId: result.user.id,
-      role: result.user.role,
     });
 
     // Redirect back to client with token in fragment (so it's not sent to server)

@@ -13,8 +13,8 @@ vary: Origin
 access-control-allow-credentials: true
 content-type: application/json; charset=utf-8
 content-length: 397
-etag: W/"18d-+opwX15XEVaop38s7PW2FqrpX/o"
-date: Thu, 09 Oct 2025 04:38:36 GMT
+etag: W/"18d-hoWnDt14uQpLG8Ayk4pzWJIdmCQ"
+date: Thu, 09 Oct 2025 08:56:52 GMT
 connection: close
 ###
 GET http://{{base_url}}/api/v1/users/{{user_id}}
@@ -22,6 +22,16 @@ Authorization: Bearer {{access_token}}
 ###
 GET http://{{base_url}}/api/v1/users?page=1&limit=10
 Authorization: Bearer {{access_token}}
+
+HTTP/1.1 200  - OK
+x-powered-by: Express
+vary: Origin
+access-control-allow-credentials: true
+content-type: application/json; charset=utf-8
+content-length: 3125
+etag: W/"c35-mX6FYWWm/u9xiiWu/07kCdbNGmA"
+date: Thu, 09 Oct 2025 08:59:52 GMT
+connection: close
 ###
 PUT http://{{base_url}}/api/v1/users/{{user_id}}
 Authorization: Bearer {{access_token}}
