@@ -8,7 +8,7 @@ const CoursesPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/courses', {
+    fetch('http://localhost:3020/api/courses', {
       headers: { Accept: 'application/json' },
     })
       .then(res => res.json())

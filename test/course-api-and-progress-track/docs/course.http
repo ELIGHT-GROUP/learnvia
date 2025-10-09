@@ -1,12 +1,12 @@
 GET http://localhost:3000/api/courses
 Accept: application/json
 ###
-GET http://localhost:3000/api/courses/course-1
+GET http://localhost:3020/api/courses/course-1
 Accept: application/json
 
 HTTP/1.1 200  - OK
 vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
 content-type: application/json
-date: Sat, 04 Oct 2025 10:19:34 GMT
+date: Thu, 09 Oct 2025 05:44:24 GMT
 connection: close
 transfer-encoding: chunked
