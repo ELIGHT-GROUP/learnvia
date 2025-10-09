@@ -1,7 +1,6 @@
 "use client";
 
 import { ReactNode, useState } from "react";
-import { users } from "./data";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -36,7 +35,6 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -45,7 +43,6 @@ import {
   CircleAlertIcon,
   MoreHorizontal,
   ShieldUser,
-  StoreIcon,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useGetUsers, useUpdateUserRole } from "@/service/query/useUsers";
@@ -59,11 +56,6 @@ const ITEMS_PER_PAGE = 5;
 
 export function UsersTable() {
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.ceil(users.length / ITEMS_PER_PAGE);
-
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const endIndex = startIndex + ITEMS_PER_PAGE;
-  const currentUsers = users.slice(startIndex, endIndex);
 
   const {
     data: usersData,
@@ -73,6 +65,9 @@ export function UsersTable() {
     page: currentPage,
     limit: ITEMS_PER_PAGE,
   });
+
+  const totalUsers = usersData?.meta?.total ?? 0;
+  const totalPages = usersData?.meta?.totalPages ?? 0;
 
   if (isLoading) {
     return <Spinner className="mx-4" />;
@@ -219,10 +214,10 @@ export function UsersTable() {
           <div>
             Showing{" "}
             <strong>
-              {Math.min(startIndex + 1, users.length)} -{" "}
-              {Math.min(endIndex, users.length)}
+              {Math.min((currentPage - 1) * ITEMS_PER_PAGE + 1, totalUsers)} -{" "}
+              {Math.min(currentPage * ITEMS_PER_PAGE, totalUsers)}
             </strong>{" "}
-            of <strong>{users.length}</strong> users
+            of <strong>{totalUsers}</strong> users
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -278,116 +273,6 @@ const UserDeactivateDialog = ({ children }: { children: ReactNode }) => {
     </AlertDialog>
   );
 };
-
-// const UserRolesChangeDialog = ({
-//   children,
-//   defaultValue,
-//   id,
-// }: {
-//   children: ReactNode;
-//   defaultValue?: string;
-//   id: string;
-// }) => {
-//   const [role, setRole] = useState(defaultValue || "student");
-//   const { mutate: updateUserRole } = useUpdateUserRole();
-
-//   useEffect(() => {
-//     if (role) {
-//       updateUserRole({ id, role });
-//     }
-//   }, [role, id, updateUserRole]);
-
-//   const handleSubmit = () => {
-//     setRole(role);
-//   };
-
-//   const clickCss =
-//     "border-primary/50 has-focus-visible:border-ring has-focus-visible:ring-ring/50";
-
-//   return (
-//     <Dialog>
-//       <DialogTrigger asChild>{children}</DialogTrigger>
-//       <DialogContent>
-//         <div className="mb-2 flex flex-col gap-2">
-//           <div
-//             className="flex size-11 shrink-0 items-center justify-center rounded-full border"
-//             aria-hidden="true"
-//           >
-//             <ShieldUser className="opacity-80" size={16} />
-//           </div>
-//           <DialogHeader>
-//             <DialogTitle className="text-left">Role Change</DialogTitle>
-//             <DialogDescription className="text-left">
-//               Select the new role for the user.
-//             </DialogDescription>
-//           </DialogHeader>
-//         </div>
-
-//         <form className="space-y-5">
-//           <div className="space-y-4">
-//             <RadioGroup
-//               className="grid-cols-1"
-//               defaultValue={role}
-//               value={role}
-//               onValueChange={setRole}
-//             >
-//               {/* admin */}
-//               <label
-//                 className={`border-input ${
-//                   role === "admin" ? clickCss : ""
-//                 } relative flex cursor-pointer flex-col gap-1 rounded-md border px-4 py-3 shadow-xs transition-[color,box-shadow] outline-none has-focus-visible:ring-[3px]`}
-//               >
-//                 <RadioGroupItem
-//                   id="radio-admin"
-//                   value="admin"
-//                   className="sr-only after:absolute after:inset-0"
-//                 />
-//                 <p className="text-foreground text-sm font-medium">Admin</p>
-//                 <p className="text-muted-foreground text-sm">
-//                   Manage all users and courses
-//                 </p>
-//               </label>
-//               {/* instructor */}
-//               <label
-//                 className={`border-input ${
-//                   role === "instructor" ? clickCss : ""
-//                 } relative flex cursor-pointer flex-col gap-1 rounded-md border px-4 py-3 shadow-xs transition-[color,box-shadow] outline-none has-focus-visible:ring-[3px]`}
-//               >
-//                 <RadioGroupItem
-//                   id="radio-instructor"
-//                   value="instructor"
-//                   className="sr-only after:absolute after:inset-0"
-//                 />
-//                 <p className="text-foreground text-sm font-medium">
-//                   Instructor
-//                 </p>
-//                 <p className="text-muted-foreground text-sm">
-//                   Create and manage courses
-//                 </p>
-//               </label>
-//               {/* student */}
-//               <label
-//                 className={`border-input ${
-//                   role === "student" ? clickCss : ""
-//                 } relative flex cursor-pointer flex-col gap-1 rounded-md border px-4 py-3 shadow-xs transition-[color,box-shadow] outline-none has-focus-visible:ring-[3px]`}
-//               >
-//                 <RadioGroupItem
-//                   id="radio-student"
-//                   value="student"
-//                   className="sr-only after:absolute after:inset-0"
-//                 />
-//                 <p className="text-foreground text-sm font-medium">Student</p>
-//                 <p className="text-muted-foreground text-sm">
-//                   Enroll in courses and track progress
-//                 </p>
-//               </label>
-//             </RadioGroup>
-//           </div>
-//         </form>
-//       </DialogContent>
-//     </Dialog>
-//   );
-// };
 
 export const UserRolesChangeDialog = ({
   children,

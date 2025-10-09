@@ -26,7 +26,7 @@ export const useGetUserById = (id: string) => {
 
 export const useGetUsers = (params: GetUsersParams) => {
   return useQuery({
-    queryKey: ["users"],
+    queryKey: ["users", params],
     queryFn: () => getUsers(params),
   });
 };
