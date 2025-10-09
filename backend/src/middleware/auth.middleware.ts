@@ -2,6 +2,9 @@ import { Request, Response, NextFunction } from "express";
 import jwtUtil from "../utils/jwt.util";
 import apiResponse from "../utils/apiResponse";
 import { UserRole } from "../enums/user.roles";
+import { createServiceLogger } from "../utils/logger.util";
+
+const logger = createServiceLogger("AuthMiddleware");
 
 interface AuthRequest extends Request {
   user?: { userId: string; role: UserRole };
@@ -11,6 +14,10 @@ const createAuthMiddleware = (allowedRoles: UserRole[] = []) => {
   return (req: AuthRequest, res: Response, next: NextFunction): void => {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      logger.warn("No Authorization header or missing Bearer token", {
+        ip: req.ip,
+        path: req.path,
+      });
       res.status(401).json(apiResponse.fail("No bearer token provided"));
       return;
     }
@@ -23,6 +30,11 @@ const createAuthMiddleware = (allowedRoles: UserRole[] = []) => {
       // If allowedRoles provided, check membership using enums
       if (allowedRoles && allowedRoles.length > 0) {
         if (!allowedRoles.includes(req.user.role)) {
+          logger.warn("Forbidden: insufficient role", {
+            userId: req.user.userId,
+            required: allowedRoles,
+            actual: req.user.role,
+          });
           res
             .status(403)
             .json(apiResponse.fail("Forbidden: insufficient role"));
@@ -32,6 +44,7 @@ const createAuthMiddleware = (allowedRoles: UserRole[] = []) => {
 
       next();
     } catch (err: any) {
+      logger.warn("Invalid or expired token", { err: err?.message });
       res
         .status(401)
         .json(apiResponse.fail("Invalid or expired token", err?.message));
