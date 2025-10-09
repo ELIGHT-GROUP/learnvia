@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { UsersService } from "../services/users.service";
 import { createServiceLogger } from "../utils/logger.util";
-import apiResponse from "../utils/apiResponse";
+import apiResponse from "../utils/api_response.util";
 
 export class UsersController {
   private usersService = new UsersService();
