@@ -2,8 +2,9 @@
 
 @user_id = 68e352c9b644d3721a4dbbd9
 @access_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGU2NjZhMTY3YTc1ZDdlYTc5MDM3N2MiLCJyb2xlIjoib3duZXIiLCJpYXQiOjE3NTk5MzAzNTN9.dbj5_3AHe9hFfo0yNlvoPFA0e4FIUxnEImsEruVXLvQ
+@base_url = localhost:8081
 ###
-GET http://localhost:8080/api/v1/users/me
+GET http://{{base_url}}/api/v1/users/me
 Authorization: Bearer {{access_token}}
 
 HTTP/1.1 200  - OK
@@ -11,25 +12,22 @@ x-powered-by: Express
 vary: Origin
 access-control-allow-credentials: true
 content-type: application/json; charset=utf-8
-content-length: 354
-etag: W/"162-CyLJIKpB0/Fg42u394ogMbwLw/A"
-date: Mon, 06 Oct 2025 06:52:18 GMT
+content-length: 397
+etag: W/"18d-jUUV9HeM42n36pQkKtOi0DH1Zio"
+date: Thu, 09 Oct 2025 04:36:13 GMT
 connection: close
 ###
-GET http://localhost:8080/api/v1/users/{{user_id}}
+GET http://{{base_url}}/api/v1/users/{{user_id}}
 Authorization: Bearer {{access_token}}
 
-HTTP/1.1 200  - OK
-x-powered-by: Express
-vary: Origin
-access-control-allow-credentials: true
-content-type: application/json; charset=utf-8
-content-length: 354
-etag: W/"162-CyLJIKpB0/Fg42u394ogMbwLw/A"
-date: Mon, 06 Oct 2025 05:31:52 GMT
+HTTP/1.1 404  - Not Found
+date: Thu, 09 Oct 2025 03:58:24 GMT
+server: Apache
+content-length: 196
 connection: close
-###	
-GET http://localhost:8080/api/v1/users?page=1&limit=10
+content-type: text/html; charset=iso-8859-1
+###
+GET http://{{base_url}}/api/v1/users?page=1&limit=10
 Authorization: Bearer {{access_token}}
 
 HTTP/1.1 200  - OK
@@ -42,7 +40,7 @@ etag: W/"2bb-e8bNG1+eE6CIIAeg7cpGhJMxHtM"
 date: Mon, 06 Oct 2025 10:01:25 GMT
 connection: close
 ###
-PUT http://localhost:8080/api/v1/users/{{{{user_id}}}}
+PUT http://{{base_url}}/api/v1/users/{{user_id}}
 Authorization: Bearer {{access_token}}
 Content-Type: application/json
 
@@ -50,9 +48,8 @@ Content-Type: application/json
 	"name": "New Name",
 	"picture": "https://lh3.googleusercontent.com/a-/AOh14Gh..."
 }
-
 ###
-PUT http://localhost:8080/api/v1/users/{{user_id}}/role
+PUT http://{{base_url}}/api/v1/users/{{user_id}}/role
 Authorization: Bearer {{access_token}}
 Content-Type: application/json
 
@@ -61,9 +58,10 @@ Content-Type: application/json
 }
 
 HTTP/1.1 200  - OK
-
 ###
-DELETE http://localhost:8080/api/v1/users/{{user_id}}
+DELETE http://{{base_url}}/api/v1/users/{{user_id}}
 Authorization: Bearer {{access_token}}
+
+HTTP/1.1 200  - OK
 
 HTTP/1.1 200  - OK
