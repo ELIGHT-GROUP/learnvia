@@ -34,7 +34,7 @@ export function Logo({
             height={32}
             src={systemData.system.logo}
             alt={systemData.system.name}
-            className={cn(sizeClasses[size], "dark:invert")}
+            className={cn(sizeClasses[size])}
           />
         </div>
       )}

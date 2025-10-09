@@ -16,7 +16,7 @@ const AuthMiddleware = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     if (isLoading) return;
     const timeout = setTimeout(() => {
-      if (!user && !isPublicRoute) router.push("/");
+      if (!user && !isPublicRoute) router.push("/auth/login");
       if (user && isPublicRoute) router.push("/dashboard");
     }, 150);
 
