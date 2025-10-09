@@ -48,7 +48,7 @@ import {
   StoreIcon,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import { useGetUsers } from "@/service/query/useUsers";
+import { useGetUsers, useUpdateUserRole } from "@/service/query/useUsers";
 import { User } from "@/types/api-user-type";
 import { Spinner } from "@/components/ui/spinner";
 import { convertDate } from "@/utils/dateConvert";
@@ -75,7 +75,7 @@ export function UsersTable() {
   });
 
   if (isLoading) {
-    return <Spinner />;
+    return <Spinner className="mx-4" />;
   }
 
   if (isError) {
@@ -157,7 +157,10 @@ export function UsersTable() {
                         <DropdownMenuContent align="end">
                           <DropdownMenuLabel>Actions</DropdownMenuLabel>
                           <Separator />
-                          <UserRolesChangeDialog defaultValue={user.role}>
+                          <UserRolesChangeDialog
+                            id={user._id}
+                            defaultValue={user.role}
+                          >
                             <DropdownMenuItem
                               defaultValue={user.role}
                               onSelect={(e) => e.preventDefault()}
@@ -267,106 +270,208 @@ const UserDeactivateDialog = ({ children }: { children: ReactNode }) => {
         </div>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction className="bg-destructive hover:bg-destructive/90">Confirm</AlertDialogAction>
+          <AlertDialogAction className="bg-destructive hover:bg-destructive/90">
+            Confirm
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
   );
 };
 
-const UserRolesChangeDialog = ({
+// const UserRolesChangeDialog = ({
+//   children,
+//   defaultValue,
+//   id,
+// }: {
+//   children: ReactNode;
+//   defaultValue?: string;
+//   id: string;
+// }) => {
+//   const [role, setRole] = useState(defaultValue || "student");
+//   const { mutate: updateUserRole } = useUpdateUserRole();
+
+//   useEffect(() => {
+//     if (role) {
+//       updateUserRole({ id, role });
+//     }
+//   }, [role, id, updateUserRole]);
+
+//   const handleSubmit = () => {
+//     setRole(role);
+//   };
+
+//   const clickCss =
+//     "border-primary/50 has-focus-visible:border-ring has-focus-visible:ring-ring/50";
+
+//   return (
+//     <Dialog>
+//       <DialogTrigger asChild>{children}</DialogTrigger>
+//       <DialogContent>
+//         <div className="mb-2 flex flex-col gap-2">
+//           <div
+//             className="flex size-11 shrink-0 items-center justify-center rounded-full border"
+//             aria-hidden="true"
+//           >
+//             <ShieldUser className="opacity-80" size={16} />
+//           </div>
+//           <DialogHeader>
+//             <DialogTitle className="text-left">Role Change</DialogTitle>
+//             <DialogDescription className="text-left">
+//               Select the new role for the user.
+//             </DialogDescription>
+//           </DialogHeader>
+//         </div>
+
+//         <form className="space-y-5">
+//           <div className="space-y-4">
+//             <RadioGroup
+//               className="grid-cols-1"
+//               defaultValue={role}
+//               value={role}
+//               onValueChange={setRole}
+//             >
+//               {/* admin */}
+//               <label
+//                 className={`border-input ${
+//                   role === "admin" ? clickCss : ""
+//                 } relative flex cursor-pointer flex-col gap-1 rounded-md border px-4 py-3 shadow-xs transition-[color,box-shadow] outline-none has-focus-visible:ring-[3px]`}
+//               >
+//                 <RadioGroupItem
+//                   id="radio-admin"
+//                   value="admin"
+//                   className="sr-only after:absolute after:inset-0"
+//                 />
+//                 <p className="text-foreground text-sm font-medium">Admin</p>
+//                 <p className="text-muted-foreground text-sm">
+//                   Manage all users and courses
+//                 </p>
+//               </label>
+//               {/* instructor */}
+//               <label
+//                 className={`border-input ${
+//                   role === "instructor" ? clickCss : ""
+//                 } relative flex cursor-pointer flex-col gap-1 rounded-md border px-4 py-3 shadow-xs transition-[color,box-shadow] outline-none has-focus-visible:ring-[3px]`}
+//               >
+//                 <RadioGroupItem
+//                   id="radio-instructor"
+//                   value="instructor"
+//                   className="sr-only after:absolute after:inset-0"
+//                 />
+//                 <p className="text-foreground text-sm font-medium">
+//                   Instructor
+//                 </p>
+//                 <p className="text-muted-foreground text-sm">
+//                   Create and manage courses
+//                 </p>
+//               </label>
+//               {/* student */}
+//               <label
+//                 className={`border-input ${
+//                   role === "student" ? clickCss : ""
+//                 } relative flex cursor-pointer flex-col gap-1 rounded-md border px-4 py-3 shadow-xs transition-[color,box-shadow] outline-none has-focus-visible:ring-[3px]`}
+//               >
+//                 <RadioGroupItem
+//                   id="radio-student"
+//                   value="student"
+//                   className="sr-only after:absolute after:inset-0"
+//                 />
+//                 <p className="text-foreground text-sm font-medium">Student</p>
+//                 <p className="text-muted-foreground text-sm">
+//                   Enroll in courses and track progress
+//                 </p>
+//               </label>
+//             </RadioGroup>
+//           </div>
+//         </form>
+//       </DialogContent>
+//     </Dialog>
+//   );
+// };
+
+export const UserRolesChangeDialog = ({
   children,
-  defaultValue,
+  defaultValue = "student",
+  id,
 }: {
   children: ReactNode;
   defaultValue?: string;
+  id: string;
 }) => {
   const [role, setRole] = useState(defaultValue || "student");
-  console.log("role", role);
+  const { mutateAsync: updateUserRole } = useUpdateUserRole();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleRoleChange = async (newRole: string) => {
+    setRole(newRole);
+
+    try {
+      await updateUserRole({ id, role: newRole });
+      setIsOpen(false);
+    } catch (error) {
+      console.error("❌ Failed to update role:", error);
+    }
+  };
 
   const clickCss =
     "border-primary/50 has-focus-visible:border-ring has-focus-visible:ring-ring/50";
 
+  const roles = [
+    {
+      value: "admin",
+      title: "Admin",
+      desc: "Manage all users and courses",
+    },
+    {
+      value: "instructor",
+      title: "Instructor",
+      desc: "Create and manage courses",
+    },
+    {
+      value: "student",
+      title: "Student",
+      desc: "Enroll in courses and track progress",
+    },
+  ];
+
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <div className="mb-2 flex flex-col gap-2">
-          <div
-            className="flex size-11 shrink-0 items-center justify-center rounded-full border"
-            aria-hidden="true"
-          >
+          <div className="flex size-11 shrink-0 items-center justify-center rounded-full border">
             <ShieldUser className="opacity-80" size={16} />
           </div>
           <DialogHeader>
-            <DialogTitle className="text-left">Role Change</DialogTitle>
+            <DialogTitle className="text-left">Change User Role</DialogTitle>
             <DialogDescription className="text-left">
-              Select the new role for the user.
+              Select a new role. The change will apply instantly.
             </DialogDescription>
           </DialogHeader>
         </div>
 
-        <form className="space-y-5">
-          <div className="space-y-4">
-            <RadioGroup
-              className="grid-cols-1"
-              defaultValue={role}
-              value={role}
-              onValueChange={setRole}
+        <RadioGroup
+          value={role}
+          onValueChange={handleRoleChange}
+          className="space-y-3"
+        >
+          {roles.map(({ value, title, desc }) => (
+            <label
+              key={value}
+              className={`border-input ${
+                role === value ? clickCss : ""
+              } relative flex cursor-pointer flex-col gap-1 rounded-md border px-4 py-3 shadow-xs transition-[color,box-shadow] outline-none has-focus-visible:ring-[3px]`}
             >
-              {/* admin */}
-              <label
-                className={`border-input ${
-                  role === "admin" ? clickCss : ""
-                } relative flex cursor-pointer flex-col gap-1 rounded-md border px-4 py-3 shadow-xs transition-[color,box-shadow] outline-none has-focus-visible:ring-[3px]`}
-              >
-                <RadioGroupItem
-                  id="radio-admin"
-                  value="admin"
-                  className="sr-only after:absolute after:inset-0"
-                />
-                <p className="text-foreground text-sm font-medium">Admin</p>
-                <p className="text-muted-foreground text-sm">
-                  Manage all users and courses
-                </p>
-              </label>
-              {/* instructor */}
-              <label
-                className={`border-input ${
-                  role === "instructor" ? clickCss : ""
-                } relative flex cursor-pointer flex-col gap-1 rounded-md border px-4 py-3 shadow-xs transition-[color,box-shadow] outline-none has-focus-visible:ring-[3px]`}
-              >
-                <RadioGroupItem
-                  id="radio-instructor"
-                  value="instructor"
-                  className="sr-only after:absolute after:inset-0"
-                />
-                <p className="text-foreground text-sm font-medium">
-                  Instructor
-                </p>
-                <p className="text-muted-foreground text-sm">
-                  Create and manage courses
-                </p>
-              </label>
-              {/* student */}
-              <label
-                className={`border-input ${
-                  role === "student" ? clickCss : ""
-                } relative flex cursor-pointer flex-col gap-1 rounded-md border px-4 py-3 shadow-xs transition-[color,box-shadow] outline-none has-focus-visible:ring-[3px]`}
-              >
-                <RadioGroupItem
-                  id="radio-student"
-                  value="student"
-                  className="sr-only after:absolute after:inset-0"
-                />
-                <p className="text-foreground text-sm font-medium">Student</p>
-                <p className="text-muted-foreground text-sm">
-                  Enroll in courses and track progress
-                </p>
-              </label>
-            </RadioGroup>
-          </div>
-        </form>
+              <RadioGroupItem
+                id={`radio-${value}`}
+                value={value}
+                className="sr-only after:absolute after:inset-0"
+              />
+              <p className="text-foreground text-sm font-medium">{title}</p>
+              <p className="text-muted-foreground text-sm">{desc}</p>
+            </label>
+          ))}
+        </RadioGroup>
       </DialogContent>
     </Dialog>
   );

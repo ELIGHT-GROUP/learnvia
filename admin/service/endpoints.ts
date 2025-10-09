@@ -15,5 +15,8 @@ export const ENDPOINTS = {
       `${BASE_URL}/${API_VERSION}/users?page=${params.page}&limit=${
         params.limit
       }&search=${params.search || ""}`,
+    update_role: (id: string) => `${BASE_URL}/${API_VERSION}/users/${id}/role`,
+    update: (id: string) => `${BASE_URL}/${API_VERSION}/users/${id}`,
+    delete: (id: string) => `${BASE_URL}/${API_VERSION}/users/${id}`,
   },
 };

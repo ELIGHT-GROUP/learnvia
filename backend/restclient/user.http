@@ -1,7 +1,7 @@
 # User REST Client
 
-@user_id = 68e352c9b644d3721a4dbbd9
-@access_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGU2NjZhMTY3YTc1ZDdlYTc5MDM3N2MiLCJyb2xlIjoib3duZXIiLCJpYXQiOjE3NTk5MzAzNTN9.dbj5_3AHe9hFfo0yNlvoPFA0e4FIUxnEImsEruVXLvQ
+@user_id = 68e667eb2ec0ff69f82b5de3
+@access_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGU2NjdlYjJlYzBmZjY5ZjgyYjVkZTMiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NTk5ODA1Nzh9.XFDyhmpe0Dczx8kx0NC95rXPKYvFNwTs2yHz4xOIWJI
 ###
 GET http://localhost:8080/api/v1/users/me
 Authorization: Bearer {{access_token}}
@@ -11,9 +11,9 @@ x-powered-by: Express
 vary: Origin
 access-control-allow-credentials: true
 content-type: application/json; charset=utf-8
-content-length: 354
-etag: W/"162-CyLJIKpB0/Fg42u394ogMbwLw/A"
-date: Mon, 06 Oct 2025 06:52:18 GMT
+content-length: 396
+etag: W/"18c-2PYA9jWseIdd2d+qj9BVz5GVojI"
+date: Thu, 09 Oct 2025 03:58:40 GMT
 connection: close
 ###
 GET http://localhost:8080/api/v1/users/{{user_id}}
@@ -24,25 +24,15 @@ x-powered-by: Express
 vary: Origin
 access-control-allow-credentials: true
 content-type: application/json; charset=utf-8
-content-length: 354
-etag: W/"162-CyLJIKpB0/Fg42u394ogMbwLw/A"
-date: Mon, 06 Oct 2025 05:31:52 GMT
-connection: close
-###	
-GET http://localhost:8080/api/v1/users?page=1&limit=10
-Authorization: Bearer {{access_token}}
-
-HTTP/1.1 200  - OK
-x-powered-by: Express
-vary: Origin
-access-control-allow-credentials: true
-content-type: application/json; charset=utf-8
-content-length: 699
-etag: W/"2bb-e8bNG1+eE6CIIAeg7cpGhJMxHtM"
-date: Mon, 06 Oct 2025 10:01:25 GMT
+content-length: 396
+etag: W/"18c-2PYA9jWseIdd2d+qj9BVz5GVojI"
+date: Thu, 09 Oct 2025 03:58:45 GMT
 connection: close
 ###
-PUT http://localhost:8080/api/v1/users/{{{{user_id}}}}
+GET http://localhost:8080/api/v1/users?page=1&limit=10
+Authorization: Bearer {{access_token}}
+###
+PUT http://localhost:8080/api/v1/users/{{user_id}}
 Authorization: Bearer {{access_token}}
 Content-Type: application/json
 
@@ -50,7 +40,6 @@ Content-Type: application/json
 	"name": "New Name",
 	"picture": "https://lh3.googleusercontent.com/a-/AOh14Gh..."
 }
-
 ###
 PUT http://localhost:8080/api/v1/users/{{user_id}}/role
 Authorization: Bearer {{access_token}}
@@ -61,7 +50,6 @@ Content-Type: application/json
 }
 
 HTTP/1.1 200  - OK
-
 ###
 DELETE http://localhost:8080/api/v1/users/{{user_id}}
 Authorization: Bearer {{access_token}}

@@ -26,7 +26,7 @@ const DashboardContent = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <>
-      <Toaster />
+      <Toaster expand={true} richColors position="top-center" />
       <Sidebar side="left" collapsible="icon">
         <SidebarHeader className="border-b h-16 flex justify-center">
           <Logo size="sm" mode={isExpanded ? "full" : "icon-only"} />
