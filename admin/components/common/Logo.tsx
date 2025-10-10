@@ -43,7 +43,7 @@ export function Logo({
       {(mode === "full" || mode === "text-only") && (
         <span
           className={cn(
-            "font-semibold tracking-tight truncate text-foreground",
+            "font-semibold tracking-tight text-foreground",
             {
               "text-lg": size === "sm",
               "text-xl": size === "md",

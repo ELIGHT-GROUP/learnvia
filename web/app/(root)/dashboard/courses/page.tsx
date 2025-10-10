@@ -21,7 +21,7 @@ export default function CoursesPage() {
             Create, edit, and manage all available courses.
           </p>
         </div>
-        <Button className="text-white" asChild>
+        <Button asChild>
           <Link href="/dashboard/courses/add">
             <PlusCircle />
             Add Course

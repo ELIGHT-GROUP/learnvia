@@ -1,8 +1,7 @@
-import AuthMiddleware from "@/components/common/AuthMiddleware";
 import React from "react";
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
-  return <AuthMiddleware>{children}</AuthMiddleware>;
+  return <>{children}</>;
 };
 
 export default RootLayout;

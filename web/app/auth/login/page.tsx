@@ -17,7 +17,7 @@ export default function LoginPage() {
       </div>
       <div className="bg-muted relative hidden lg:block">
         <Image
-          src="https://shorturl.at/pDCM0"
+          src="/images/login-page-poster.png"
           alt="Image"
           width={1600}
           height={900}

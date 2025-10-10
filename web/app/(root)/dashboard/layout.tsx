@@ -11,12 +11,15 @@ import SidebarNav from "./(c)/sidebar-nav";
 import Logo from "@/components/common/Logo";
 import Header from "./(c)/header";
 import { Toaster } from "sonner";
+import AuthMiddleware from "@/components/common/AuthMiddleware";
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <SidebarProvider>
-      <DashboardContent>{children}</DashboardContent>
-    </SidebarProvider>
+    <AuthMiddleware>
+      <SidebarProvider>
+        <DashboardContent>{children}</DashboardContent>
+      </SidebarProvider>
+    </AuthMiddleware>
   );
 };
 
