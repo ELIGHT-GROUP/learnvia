@@ -3,7 +3,9 @@ import { UserModel } from "../models/User.model";
 import jwtUtil from "../utils/jwt.util";
 import { BadRequestError, UnauthorizedError } from "../errors/HttpError";
 import { createServiceLogger } from "../utils/logger.util";
-import { UserRole } from "../enums/user.roles";
+import { UserRole } from "../constants/user.roles";
+import { bumpVersion } from "./cache/cache.service";
+import USER_CACHE from "../constants/cache.keys";
 
 interface GoogleUserInfo {
   sub: string; // Google user ID
@@ -140,6 +142,12 @@ export class GoogleAuthService {
 
       await user.save();
       this.logger.info(`Created new user via Google: ${user.email}`);
+      // invalidate users list cache
+      try {
+        await bumpVersion(USER_CACHE.USERS_LIST);
+      } catch (err) {
+        this.logger.warn("Failed to bump users:list version", err);
+      }
     } else if (!user.googleId) {
       user.googleId = googleUser.sub;
       // update name/picture if missing or changed
@@ -148,6 +156,12 @@ export class GoogleAuthService {
       if (googleUser.picture && user.picture !== googleUser.picture)
         user.picture = googleUser.picture;
       await user.save();
+      // bump version when updating user record
+      try {
+        await bumpVersion(USER_CACHE.USERS_LIST);
+      } catch (err) {
+        this.logger.warn("Failed to bump users:list version", err);
+      }
     }
 
     return {

@@ -5,7 +5,7 @@ import mongoose from "mongoose";
 import { UserModel } from "../models/User.model";
 import { createServiceLogger } from "../utils/logger.util";
 import { connectDB } from "../config/mongo.config";
-import { UserRole } from "../enums/user.roles";
+import { UserRole } from "../constants/user.roles";
 
 const logger = createServiceLogger("SeedUsers");
 

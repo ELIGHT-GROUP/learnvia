@@ -1,6 +1,8 @@
 import { createServiceLogger } from "../utils/logger.util";
 import { UserModel, IUser } from "../models/User.model";
-import { UserRole } from "../enums/user.roles";
+import { UserRole } from "../constants/user.roles";
+import cacheService, { bumpVersion, getVersion } from "./cache/cache.service";
+import USER_CACHE from "../constants/cache.keys";
 
 export class UsersService {
   private logger = createServiceLogger("UsersService");
@@ -52,7 +54,6 @@ export class UsersService {
     }
   }
 
-  // Offset-based pagination: page (1-based) and limit
   async getAll(
     page = 1,
     limit = 25
@@ -65,25 +66,32 @@ export class UsersService {
     const MAX_LIMIT = 100;
     const safeLimit = Math.min(Math.max(1, limit), MAX_LIMIT);
     const safePage = Math.max(1, page);
-    const skip = (safePage - 1) * safeLimit;
 
-    const [items, total] = await Promise.all([
-      UserModel.find()
-        .select("-__v")
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(safeLimit)
-        .lean()
-        .exec(),
-      UserModel.countDocuments().exec(),
-    ]);
+    // use cache versioning to invalidate on writes
+    const version = await getVersion(USER_CACHE.USERS_LIST);
+    const cacheKey = `${USER_CACHE.USERS_LIST}:v=${version}:page=${safePage}:limit=${safeLimit}`;
 
-    const totalPages = Math.ceil(total / safeLimit);
+    return await cacheService.getOrSet(cacheKey, async () => {
+      const skip = (safePage - 1) * safeLimit;
 
-    return {
-      items: items as Partial<IUser>[],
-      meta: { page: safePage, limit: safeLimit, total, totalPages },
-    };
+      const [items, total] = await Promise.all([
+        UserModel.find()
+          .select("-__v")
+          .sort({ createdAt: -1 })
+          .skip(skip)
+          .limit(safeLimit)
+          .lean()
+          .exec(),
+        UserModel.countDocuments().exec(),
+      ]);
+
+      const totalPages = Math.ceil(total / safeLimit);
+
+      return {
+        items: items as Partial<IUser>[],
+        meta: { page: safePage, limit: safeLimit, total, totalPages },
+      };
+    });
   }
 
   async deleteUser(id: string, requestingUserId: string): Promise<void> {
@@ -95,6 +103,8 @@ export class UsersService {
       this.logger.warn("User not found for deletion", { userId: id });
       throw new Error("User not found");
     }
+    // invalidate users list
+    await bumpVersion(USER_CACHE.USERS_LIST);
   }
 
   async changeUserRole(id: string, newRole: string): Promise<Partial<IUser>> {
@@ -118,6 +128,8 @@ export class UsersService {
     if (!user) {
       throw new Error("User not found");
     }
+
+    await bumpVersion(USER_CACHE.USERS_LIST);
     return user as Partial<IUser>;
   }
 
@@ -155,6 +167,8 @@ export class UsersService {
       this.logger.warn("User not found on update", { userId: id });
       throw new Error("User not found");
     }
+
+    await bumpVersion(USER_CACHE.USERS_LIST);
 
     return user as Partial<IUser>;
   }

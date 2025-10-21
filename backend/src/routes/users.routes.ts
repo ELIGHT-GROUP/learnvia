@@ -4,7 +4,7 @@ import {
   authMiddleware,
   ownDataMiddleware,
 } from "../middleware/auth.middleware";
-import { UserRole } from "../enums/user.roles";
+import { UserRole } from "../constants/user.roles";
 
 const router = Router();
 const usersController = new UsersController();

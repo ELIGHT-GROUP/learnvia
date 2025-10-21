@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { GoogleAuthService } from "../services/google.auth.service";
 import { createServiceLogger } from "../utils/logger.util";
-import apiResponse from "../utils/apiResponse";
+import apiResponse from "../utils/api_response.util";
 import crypto from "crypto";
 import jwtUtil from "../utils/jwt.util";
 import { BadRequestError } from "../errors/HttpError";
