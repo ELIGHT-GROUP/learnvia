@@ -21,8 +21,13 @@ export const makeKey = (
   return `${namespace}:${filtered.join(":")}`;
 };
 
+export const makeUserProfileKey = (userId: string) => {
+  return makeKey("user:profile", userId);
+};
+
 export default {
   serialize,
   deserialize,
   makeKey,
+  makeUserProfileKey,
 };

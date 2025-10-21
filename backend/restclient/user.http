@@ -1,26 +1,16 @@
 # User REST Client
 
-@user_id = 68e352c9b644d3721a4dbbd9
-@access_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGU2NjZhMTY3YTc1ZDdlYTc5MDM3N2MiLCJyb2xlIjoib3duZXIiLCJpYXQiOjE3NTk5MzAzNTN9.dbj5_3AHe9hFfo0yNlvoPFA0e4FIUxnEImsEruVXLvQ
+@user_id = 68e666a167a75d7ea790377c
+@access_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGU2NjZhMTY3YTc1ZDdlYTc5MDM3N2MiLCJpYXQiOjE3NjAwMDI3OTV9.rZtDxtg5ZwQzydWcL9_0dlf1v_ql3XhIDdgsxXsjo-w
 @base_url = localhost:8081
 ###
 GET http://{{base_url}}/api/v1/users/me
 Authorization: Bearer {{access_token}}
-
-HTTP/1.1 200  - OK
-x-powered-by: Express
-vary: Origin
-access-control-allow-credentials: true
-content-type: application/json; charset=utf-8
-content-length: 397
-etag: W/"18d-+opwX15XEVaop38s7PW2FqrpX/o"
-date: Thu, 09 Oct 2025 04:38:36 GMT
-connection: close
 ###
 GET http://{{base_url}}/api/v1/users/{{user_id}}
 Authorization: Bearer {{access_token}}
 ###
-GET http://{{base_url}}/api/v1/users?page=1&limit=10
+GET http://{{base_url}}/api/v1/users?page=1&limit=10&searchKeyword=owner&searchBy=role
 Authorization: Bearer {{access_token}}
 ###
 PUT http://{{base_url}}/api/v1/users/{{user_id}}
@@ -39,12 +29,6 @@ Content-Type: application/json
 {
   "role": "admin"
 }
-
-HTTP/1.1 200  - OK
 ###
 DELETE http://{{base_url}}/api/v1/users/{{user_id}}
 Authorization: Bearer {{access_token}}
-
-HTTP/1.1 200  - OK
-
-HTTP/1.1 200  - OK

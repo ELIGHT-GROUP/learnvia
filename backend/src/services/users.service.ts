@@ -56,7 +56,8 @@ export class UsersService {
 
   async getAll(
     page = 1,
-    limit = 25
+    limit = 25,
+    filters?: { role?: string; name?: string }
   ): Promise<{
     items: Partial<IUser>[];
     meta: { page: number; limit: number; total: number; totalPages: number };
@@ -67,31 +68,41 @@ export class UsersService {
     const safeLimit = Math.min(Math.max(1, limit), MAX_LIMIT);
     const safePage = Math.max(1, page);
 
-    // use cache versioning to invalidate on writes
-    const version = await getVersion(USER_CACHE.USERS_LIST);
-    const cacheKey = `${USER_CACHE.USERS_LIST}:v=${version}:page=${safePage}:limit=${safeLimit}`;
+    const skip = (safePage - 1) * safeLimit;
 
-    return await cacheService.getOrSet(cacheKey, async () => {
-      const skip = (safePage - 1) * safeLimit;
+    const filter: any = {};
+    if (filters) {
+      if (filters.role) {
+        const allowedRoles = Object.values(UserRole);
+        if (!allowedRoles.includes(filters.role as UserRole)) {
+          throw new Error("Invalid role filter");
+        }
+        filter.role = filters.role;
+      }
+      if (filters.name) {
+        // Case-insensitive partial match on name
+        const escaped = filters.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        filter.name = { $regex: escaped, $options: "i" };
+      }
+    }
 
-      const [items, total] = await Promise.all([
-        UserModel.find()
-          .select("-__v")
-          .sort({ createdAt: -1 })
-          .skip(skip)
-          .limit(safeLimit)
-          .lean()
-          .exec(),
-        UserModel.countDocuments().exec(),
-      ]);
+    const [items, total] = await Promise.all([
+      UserModel.find(filter)
+        .select("-__v")
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(safeLimit)
+        .lean()
+        .exec(),
+      UserModel.countDocuments(filter).exec(),
+    ]);
 
-      const totalPages = Math.ceil(total / safeLimit);
+    const totalPages = Math.ceil(total / safeLimit);
 
-      return {
-        items: items as Partial<IUser>[],
-        meta: { page: safePage, limit: safeLimit, total, totalPages },
-      };
-    });
+    return {
+      items: items as Partial<IUser>[],
+      meta: { page: safePage, limit: safeLimit, total, totalPages },
+    };
   }
 
   async deleteUser(id: string, requestingUserId: string): Promise<void> {
@@ -103,8 +114,7 @@ export class UsersService {
       this.logger.warn("User not found for deletion", { userId: id });
       throw new Error("User not found");
     }
-    // invalidate users list
-    await bumpVersion(USER_CACHE.USERS_LIST);
+    // cache invalidation removed for testing — keep bumpVersion available for future use
   }
 
   async changeUserRole(id: string, newRole: string): Promise<Partial<IUser>> {
@@ -129,7 +139,18 @@ export class UsersService {
       throw new Error("User not found");
     }
 
-    await bumpVersion(USER_CACHE.USERS_LIST);
+    // Invalidate per-user cached profile so role checks read fresh data
+    try {
+      const { default: cacheService } = await import("./cache/cache.service");
+      const { makeUserProfileKey } = await import("../utils/cache.util");
+      await cacheService.del(makeUserProfileKey(id));
+    } catch (err) {
+      this.logger.warn("Failed to invalidate user profile cache", {
+        userId: id,
+        err: (err as any).message,
+      });
+    }
+
     return user as Partial<IUser>;
   }
 
@@ -167,8 +188,6 @@ export class UsersService {
       this.logger.warn("User not found on update", { userId: id });
       throw new Error("User not found");
     }
-
-    await bumpVersion(USER_CACHE.USERS_LIST);
 
     return user as Partial<IUser>;
   }

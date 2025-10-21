@@ -3,15 +3,23 @@ import jwtUtil from "../utils/jwt.util";
 import apiResponse from "../utils/apiResponse.util";
 import { UserRole } from "../constants/user.roles";
 import { createServiceLogger } from "../utils/logger.util";
+import { UsersService } from "../services/users.service";
+import cacheService from "../services/cache/cache.service";
+import { makeUserProfileKey } from "../utils/cache.util";
 
 const logger = createServiceLogger("AuthMiddleware");
 
 interface AuthRequest extends Request {
-  user?: { userId: string; role: UserRole };
+  user?: { userId: string; role?: UserRole };
 }
 
 const createAuthMiddleware = (allowedRoles: UserRole[] = []) => {
-  return (req: AuthRequest, res: Response, next: NextFunction): void => {
+  const usersService = new UsersService();
+  return async (
+    req: AuthRequest,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       logger.warn("No Authorization header or missing Bearer token", {
@@ -25,19 +33,43 @@ const createAuthMiddleware = (allowedRoles: UserRole[] = []) => {
 
     try {
       const decoded: any = jwtUtil.verify(token);
-      req.user = { userId: decoded.userId, role: decoded.role as UserRole };
+      const userId = decoded.userId as string;
+      req.user = { userId };
 
-      // If allowedRoles provided, check membership using enums
+      // If allowedRoles are required, fetch authoritative user role from cache or DB
       if (allowedRoles && allowedRoles.length > 0) {
-        if (!allowedRoles.includes(req.user.role)) {
-          logger.warn("Forbidden: insufficient role", {
-            userId: req.user.userId,
-            required: allowedRoles,
-            actual: req.user.role,
+        try {
+          const cacheKey = makeUserProfileKey(userId);
+          let user = await cacheService.get<any>(cacheKey);
+          if (!user) {
+            user = await usersService.getById(userId);
+            // store minimal fields in cache
+            await cacheService.set(
+              cacheKey,
+              { id: userId, role: (user as any).role },
+              60
+            );
+          }
+
+          const role = (user as any).role as UserRole;
+          if (!allowedRoles.includes(role)) {
+            logger.warn("Forbidden: insufficient role (authoritative)", {
+              userId,
+              required: allowedRoles,
+              actual: role,
+            });
+            res
+              .status(403)
+              .json(apiResponse.fail("Forbidden: insufficient role"));
+            return;
+          }
+          // attach role to req.user for downstream handlers
+          req.user.role = role;
+        } catch (err: any) {
+          logger.error("Failed to fetch authoritative role", {
+            err: err?.message,
           });
-          res
-            .status(403)
-            .json(apiResponse.fail("Forbidden: insufficient role"));
+          res.status(500).json(apiResponse.fail("Internal error"));
           return;
         }
       }

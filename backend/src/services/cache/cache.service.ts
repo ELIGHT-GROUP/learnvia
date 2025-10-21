@@ -55,6 +55,36 @@ export async function del(key: string): Promise<boolean> {
   }
 }
 
+async function get<T>(key: string): Promise<T | null> {
+  const prefixed = getPrefixedKey(key);
+  try {
+    const raw = await adapter.getRaw(prefixed);
+    if (!raw) return null;
+    return deserialize<T>(raw);
+  } catch (err) {
+    logger.error("cache get failed", { key, err });
+    return null;
+  }
+}
+async function set<T>(
+  key: string,
+  value: T,
+  ttlSeconds?: number
+): Promise<boolean> {
+  const prefixed = getPrefixedKey(key);
+  try {
+    const raw = serialize(value);
+    return await adapter.setRaw(
+      prefixed,
+      raw,
+      ttlSeconds ?? cacheConfig.defaultTTLSeconds
+    );
+  } catch (err) {
+    logger.error("cache set failed", { key, err });
+    return false;
+  }
+}
+
 // Simple versioning strategy: store version key and include it in cache keys when needed
 export const versionKey = (name: string) => `version:${name}`;
 
@@ -87,4 +117,6 @@ export default {
   del,
   bumpVersion,
   getVersion,
+  get,
+  set,
 };

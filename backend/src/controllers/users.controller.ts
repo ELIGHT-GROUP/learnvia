@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { UsersService } from "../services/users.service";
 import { createServiceLogger } from "../utils/logger.util";
-import apiResponse from "../utils/api_response.util";
+import apiResponse from "../utils/apiResponse.util";
 
 export class UsersController {
   private usersService = new UsersService();
@@ -37,21 +37,44 @@ export class UsersController {
   async getMe(req: Request, res: Response): Promise<void> {
     try {
       const requestingUserId = (req as any).user.userId;
-      // Update lastLoggedIn timestamp since this endpoint indicates user activity
       await this.usersService.updateLastLoggedIn(requestingUserId);
       const user = await this.usersService.getById(requestingUserId);
+      try {
+        // keep cached minimal profile short-lived (60s)
+        const cacheSvc = await import("../services/cache/cache.service");
+        const { makeUserProfileKey } = await import("../utils/cache.util");
+        await cacheSvc.default.set(
+          makeUserProfileKey(requestingUserId),
+          { id: requestingUserId, role: (user as any).role },
+          60
+        );
+      } catch (err) {
+        this.logger.warn("Failed to cache /me profile", {
+          err: (err as any).message,
+        });
+      }
       res.json(apiResponse.success(user));
     } catch (error: any) {
       res.status(500).json(apiResponse.fail(error.message));
     }
   }
 
-  // GET /users (admin can list all users)
+  // GET /users
   async getAllUsers(req: Request, res: Response): Promise<void> {
     try {
       const page = parseInt((req.query.page as string) || "1", 10);
       const limit = parseInt((req.query.limit as string) || "25", 10);
-      const result = await this.usersService.getAll(page, limit);
+      const searchKeyword = (req.query.searchKeyword as string) || undefined;
+      const searchBy = (req.query.searchBy as string) || undefined;
+
+      const filters: any = {};
+      if (searchBy === "role" && searchKeyword) {
+        filters.role = searchKeyword;
+      } else if (searchBy === "name" && searchKeyword) {
+        filters.name = searchKeyword;
+      }
+
+      const result = await this.usersService.getAll(page, limit, filters);
       res.json(apiResponse.successPaginated(result.items, result.meta));
     } catch (error: any) {
       res.status(500).json(apiResponse.fail(error.message));
@@ -102,15 +125,5 @@ export class UsersController {
     } catch (error: any) {
       res.status(400).json(apiResponse.fail(error.message));
     }
-  }
-
-  async getUserVehicles(req: Request, res: Response): Promise<void> {
-    // Deprecated in auth-only template
-    res.status(410).json({ message: "Endpoint removed" });
-  }
-
-  async getUserBids(req: Request, res: Response): Promise<void> {
-    // Deprecated in auth-only template
-    res.status(410).json({ message: "Endpoint removed" });
   }
 }
