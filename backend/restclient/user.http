@@ -6,32 +6,12 @@
 ###
 GET http://{{base_url}}/api/v1/users/me
 Authorization: Bearer {{access_token}}
-
-HTTP/1.1 200  - OK
-x-powered-by: Express
-vary: Origin
-access-control-allow-credentials: true
-content-type: application/json; charset=utf-8
-content-length: 397
-etag: W/"18d-aPh4rNh9aHxsZmpDUYJCrepH33g"
-date: Thu, 09 Oct 2025 09:40:19 GMT
-connection: close
 ###
 GET http://{{base_url}}/api/v1/users/{{user_id}}
 Authorization: Bearer {{access_token}}
 ###
 GET http://{{base_url}}/api/v1/users?page=1&limit=10&searchKeyword=owner&searchBy=role
 Authorization: Bearer {{access_token}}
-
-HTTP/1.1 200  - OK
-x-powered-by: Express
-vary: Origin
-access-control-allow-credentials: true
-content-type: application/json; charset=utf-8
-content-length: 463
-etag: W/"1cf-2rpFPSk8GepgwbIXL4VpSCUUviA"
-date: Thu, 09 Oct 2025 10:08:20 GMT
-connection: close
 ###
 PUT http://{{base_url}}/api/v1/users/{{user_id}}
 Authorization: Bearer {{access_token}}
@@ -49,20 +29,6 @@ Content-Type: application/json
 {
   "role": "admin"
 }
-
-HTTP/1.1 403  - Forbidden
-x-powered-by: Express
-vary: Origin
-access-control-allow-credentials: true
-content-type: application/json; charset=utf-8
-content-length: 68
-etag: W/"44-bYi80N3lm+ZSW3pjt5xyyieo4O4"
-date: Thu, 09 Oct 2025 09:41:05 GMT
-connection: close
 ###
 DELETE http://{{base_url}}/api/v1/users/{{user_id}}
 Authorization: Bearer {{access_token}}
-
-HTTP/1.1 200  - OK
-
-HTTP/1.1 200  - OK
