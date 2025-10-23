@@ -23,18 +23,7 @@ import { Button } from "@/components/ui/button";
 
 export default function Search() {
   const [open, setOpen] = React.useState(false);
-
-  React.useEffect(() => {
-    const down = (e: KeyboardEvent) => {
-      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault();
-        setOpen((open) => !open);
-      }
-    };
-
-    document.addEventListener("keydown", down);
-    return () => document.removeEventListener("keydown", down);
-  }, []);
+ 
 
   return (
     <>
@@ -51,7 +40,7 @@ export default function Search() {
         <CommandInput placeholder="Type a command or search..." />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
-          <CommandGroup heading="Quick start">
+          {/* <CommandGroup heading="Quick start">
             <CommandItem>
               <FolderPlusIcon
                 size={16}
@@ -106,7 +95,7 @@ export default function Search() {
               />
               <span>Go to connections</span>
             </CommandItem>
-          </CommandGroup>
+          </CommandGroup> */}
         </CommandList>
       </CommandDialog>
     </>

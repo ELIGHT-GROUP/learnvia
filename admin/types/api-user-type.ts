@@ -15,5 +15,6 @@ export interface User {
 export interface GetUsersParams {
   page: number;
   limit: number;
-  search?: string;
+  searchKeyword?: string;
+  searchBy?: string;
 }
